@@ -1,126 +1,714 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login | SmartRent</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    /* Use your existing styling here or paste from the previous version */
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartRent - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --error-color: #dc2626;
+            --success-color: #16a34a;
+            --text-color: #1f2937;
+            --text-light: #6b7280;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f3f4f6;
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            display: flex;
+            width: 80%;
+            max-width: 1000px;
+            min-height: 600px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .left-panel h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .left-panel p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .feature-list {
+            margin-top: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .feature-icon {
+            background-color: rgba(255, 255, 255, 0.2);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        
+        .right-panel {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .form-container {
+            width: 100%;
+        }
+        
+        .form-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .form-header h2 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .form-header p {
+            color: var(--text-light);
+        }
+        
+        .form-tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-light);
+            position: relative;
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .input-group .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #9ca3af;
+        }
+        
+        .role-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .role-option {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .role-option:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .role-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.1);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+        
+        .remember-me input {
+            margin-right: 8px;
+        }
+        
+        .forgot-password {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .password-strength {
+            height: 5px;
+            width: 100%;
+            background-color: #e5e7eb;
+            border-radius: 3px;
+            margin-top: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .strength-meter {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        
+        .strength-text {
+            font-size: 12px;
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        .alert {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .alert-error {
+            background-color: #fee2e2;
+            color: var(--error-color);
+            border: 1px solid #fecaca;
+        }
+        
+        .alert-success {
+            background-color: #dcfce7;
+            color: var(--success-color);
+            border: 1px solid #bbf7d0;
+        }
+        
+        .register-form {
+            display: none;
+        }
+        
+        .other-options {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .other-options p {
+            color: var(--text-light);
+            margin-bottom: 15px;
+        }
+        
+        .social-login {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f3f4f6;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .social-btn:hover {
+            background-color: #e5e7eb;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                width: 95%;
+            }
+            
+            .left-panel {
+                display: none;
+            }
+            
+            .right-panel {
+                padding: 30px 20px;
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <div class="left-panel">
+            <h1>SmartRent</h1>
+            <p>Streamlining property management for landlords, tenants, and workers.</p>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div>Secure role-based access</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div>Apartment management</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <div>Payment processing</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div>Service requests</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div>Integrated shopping</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="right-panel">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Welcome back</h2>
+                    <p>Please sign in to access your dashboard</p>
+                </div>
+                
+                <div class="form-tabs">
+                    <div class="tab active" id="login-tab">Login</div>
+                    <div class="tab" id="register-tab">Register</div>
+                </div>
+                
+                <div class="alert alert-error" id="error-alert">
+                    <i class="fas fa-exclamation-circle"></i> <span id="error-message"></span>
+                </div>
+                
+                <div class="alert alert-success" id="success-alert">
+                    <i class="fas fa-check-circle"></i> <span id="success-message"></span>
+                </div>
+                
+                <!-- Login Form -->
+                <form id="login-form" class="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <div class="input-group">
+                            <input type="email" id="login-email" name="email" placeholder="your@email.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <div class="input-group">
+                            <input type="password" id="login-password" name="password" placeholder="Enter your password" required>
+                            <span class="toggle-password" data-target="login-password">
+                                <i class="far fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Select Role</label>
+                        <div class="role-selector">
+                            <div class="role-option" data-role="landlord">
+                                <i class="fas fa-user-tie"></i>
+                                <div>Landlord</div>
+                            </div>
+                            <div class="role-option" data-role="tenant">
+                                <i class="fas fa-user"></i>
+                                <div>Tenant</div>
+                            </div>
+                            <div class="role-option" data-role="worker">
+                                <i class="fas fa-hard-hat"></i>
+                                <div>Worker</div>
+                            </div>
+                            <div class="role-option" data-role="shop">
+                                <i class="fas fa-store"></i>
+                                <div>Shop Manager</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="remember-forgot">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember" name="remember">
+                            <label for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password" id="forgot-password-link">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Login</button>
+                </form>
+                
+                <!-- Registration Form -->
+                <form id="register-form" class="register-form">
+                    <div class="form-group">
+                        <label for="register-name">Full Name</label>
+                        <div class="input-group">
+                            <input type="text" id="register-name" name="name" placeholder="Enter your full name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-email">Email Address</label>
+                        <div class="input-group">
+                            <input type="email" id="register-email" name="email" placeholder="your@email.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-phone">Phone Number</label>
+                        <div class="input-group">
+                            <input type="tel" id="register-phone" name="phone" placeholder="e.g. 07XXXXXXXX" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <div class="input-group">
+                            <input type="password" id="register-password" name="password" placeholder="Create a strong password" required>
+                            <span class="toggle-password" data-target="register-password">
+                                <i class="far fa-eye"></i>
+                            </span>
+                        </div>
+                        <div class="password-strength">
+                            <div class="strength-meter" id="strength-meter"></div>
+                        </div>
+                        <div class="strength-text" id="strength-text">Password strength</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <div class="input-group">
+                            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+                            <span class="toggle-password" data-target="confirm-password">
+                                <i class="far fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Select Role</label>
+                        <div class="role-selector">
+                            <div class="role-option" data-role="landlord">
+                                <i class="fas fa-user-tie"></i>
+                                <div>Landlord</div>
+                            </div>
+                            <div class="role-option" data-role="tenant">
+                                <i class="fas fa-user"></i>
+                                <div>Tenant</div>
+                            </div>
+                            <div class="role-option" data-role="worker">
+                                <i class="fas fa-hard-hat"></i>
+                                <div>Worker</div>
+                            </div>
+                            <div class="role-option" data-role="shop">
+                                <i class="fas fa-store"></i>
+                                <div>Shop Manager</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Register</button>
+                    <p style="text-align: center; margin-top: 10px; font-size: 14px; color: var(--text-light);">
+                        By registering, you'll need admin approval before access
+                    </p>
+                </form>
+                
+                <div class="other-options">
+                    <p>Or continue with</p>
+                    <div class="social-login">
+                        <div class="social-btn">
+                            <i class="fab fa-google"></i>
+                        </div>
+                        <div class="social-btn">
+                            <i class="fab fa-facebook-f"></i>
+                        </div>
+                        <div class="social-btn">
+                            <i class="fab fa-apple"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <div class="login-container">
-    <h2>SmartRent Login</h2>
-    <form id="loginForm">
-      <div class="form-group">
-        <label for="email">Email Address</label>
-        <input type="email" id="email" required>
-      </div>
-
-      <div class="form-group password-wrapper">
-        <label for="password">Password</label>
-        <input type="password" id="password" required>
-        <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
-      </div>
-
-      <div class="form-group">
-        <label for="role">Login as</label>
-        <select id="role" required>
-          <option value="">Select role</option>
-          <option value="Tenant">Tenant</option>
-          <option value="Landlord">Landlord</option>
-          <option value="Shop Manager">Shop Manager</option>
-        </select>
-      </div>
-
-      <div class="remember-me">
-        <input type="checkbox" id="remember" />
-        <label for="remember">Remember Me</label>
-      </div>
-
-      <button type="submit" class="btn">Login</button>
-    </form>
-  </div>
-
-  <div class="toast" id="toast"></div>
-
-  <script>
-    const form = document.getElementById('loginForm');
-    const toast = document.getElementById('toast');
-
-    function togglePassword(id) {
-      const input = document.getElementById(id);
-      input.type = input.type === 'password' ? 'text' : 'password';
-    }
-
-    function showToast(message, success = false) {
-      toast.textContent = message;
-      toast.className = "toast" + (success ? " success" : "");
-      toast.style.display = "block";
-      setTimeout(() => { toast.style.display = "none"; }, 3500);
-    }
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      const role = document.getElementById("role").value;
-      const remember = document.getElementById("remember").checked;
-
-      if (!email || !password || !role) {
-        showToast("Please fill all fields");
-        return;
-      }
-
-      if (!/^\S+@\S+\.\S+$/.test(email)) {
-        showToast("Invalid email format");
-        return;
-      }
-
-      try {
-        const res = await fetch("/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password, role })
+    <script>
+        $(document).ready(function() {
+            // Tab switching
+            $('#login-tab').click(function() {
+                $(this).addClass('active');
+                $('#register-tab').removeClass('active');
+                $('#login-form').show();
+                $('#register-form').hide();
+            });
+            
+            $('#register-tab').click(function() {
+                $(this).addClass('active');
+                $('#login-tab').removeClass('active');
+                $('#register-form').show();
+                $('#login-form').hide();
+            });
+            
+            // Password toggle visibility
+            $('.toggle-password').click(function() {
+                const targetId = $(this).data('target');
+                const passwordInput = $('#' + targetId);
+                
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    $(this).html('<i class="far fa-eye-slash"></i>');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    $(this).html('<i class="far fa-eye"></i>');
+                }
+            });
+            
+            // Role selection
+            $('.role-option').click(function() {
+                $(this).siblings().removeClass('selected');
+                $(this).addClass('selected');
+            });
+            
+            // Password strength meter
+            $('#register-password').on('input', function() {
+                const password = $(this).val();
+                let strength = 0;
+                let meter = $('#strength-meter');
+                let text = $('#strength-text');
+                
+                if (password.length >= 8) strength += 1;
+                if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 1;
+                if (password.match(/\d/)) strength += 1;
+                if (password.match(/[^a-zA-Z\d]/)) strength += 1;
+                
+                switch(strength) {
+                    case 0:
+                        meter.css({'width': '0%', 'background-color': '#e5e7eb'});
+                        text.text('Password strength').css('color', '#6b7280');
+                        break;
+                    case 1:
+                        meter.css({'width': '25%', 'background-color': '#ef4444'});
+                        text.text('Weak').css('color', '#ef4444');
+                        break;
+                    case 2:
+                        meter.css({'width': '50%', 'background-color': '#f59e0b'});
+                        text.text('Fair').css('color', '#f59e0b');
+                        break;
+                    case 3:
+                        meter.css({'width': '75%', 'background-color': '#3b82f6'});
+                        text.text('Good').css('color', '#3b82f6');
+                        break;
+                    case 4:
+                        meter.css({'width': '100%', 'background-color': '#10b981'});
+                        text.text('Strong').css('color', '#10b981');
+                        break;
+                }
+            });
+            
+            // Form submission handlers
+            $('#login-form').submit(function(e) {
+                e.preventDefault();
+                
+                // Get selected role
+                const selectedRole = $('.login-form .role-option.selected').data('role');
+                if (!selectedRole) {
+                    showError('Please select a role to continue');
+                    return;
+                }
+                
+                const email = $('#login-email').val();
+                const password = $('#login-password').val();
+                
+                // Here you would normally make an AJAX call to your backend
+                // For demo purposes, show success
+                showSuccess('Login successful! Redirecting to your dashboard...');
+                
+                // Simulate redirect after 2 seconds
+                setTimeout(function() {
+                    window.location.href = selectedRole + '-dashboard.html';
+                }, 2000);
+            });
+            
+            $('#register-form').submit(function(e) {
+                e.preventDefault();
+                
+                // Get selected role
+                const selectedRole = $('.register-form .role-option.selected').data('role');
+                if (!selectedRole) {
+                    showError('Please select a role to continue');
+                    return;
+                }
+                
+                const name = $('#register-name').val();
+                const email = $('#register-email').val();
+                const phone = $('#register-phone').val();
+                const password = $('#register-password').val();
+                const confirmPassword = $('#confirm-password').val();
+                
+                // Basic validation
+                if (password !== confirmPassword) {
+                    showError('Passwords do not match');
+                    return;
+                }
+                
+                // Here you would normally make an AJAX call to your backend
+                // For demo purposes, show success
+                showSuccess('Registration submitted! Please wait for admin approval.');
+                
+                // Clear form after successful submission
+                $('#register-form')[0].reset();
+            });
+            
+            // Forgot password link
+            $('#forgot-password-link').click(function(e) {
+                e.preventDefault();
+                const email = prompt('Enter your email address to reset your password:');
+                
+                if (email) {
+                    // Here you would normally make an AJAX call to your backend
+                    showSuccess('Password reset instructions sent to your email');
+                }
+            });
+            
+            // Error and success message handlers
+            function showError(message) {
+                $('#error-message').text(message);
+                $('#error-alert').fadeIn();
+                
+                setTimeout(function() {
+                    $('#error-alert').fadeOut();
+                }, 5000);
+            }
+            
+            function showSuccess(message) {
+                $('#success-message').text(message);
+                $('#success-alert').fadeIn();
+                
+                setTimeout(function() {
+                    $('#success-alert').fadeOut();
+                }, 5000);
+            }
         });
-
-        const data = await res.json();
-
-        if (!res.ok) throw new Error(data.message || "Login failed");
-
-        if (remember) {
-          localStorage.setItem("rememberedEmail", email);
-        } else {
-          localStorage.removeItem("rememberedEmail");
-        }
-
-        // Optional: store token or session info here
-        localStorage.setItem("userRole", role);
-
-        showToast("Login successful!", true);
-        setTimeout(() => {
-          // Redirect based on role
-          if (role === "Tenant") window.location.href = "/tenant/dashboard.html";
-          else if (role === "Landlord") window.location.href = "/landlord/dashboard.html";
-          else window.location.href = "/shop/dashboard.html";
-        }, 1500);
-
-      } catch (err) {
-        showToast(err.message);
-      }
-    });
-
-    // Pre-fill remembered email if any
-    window.onload = () => {
-      const rememberedEmail = localStorage.getItem("rememberedEmail");
-      if (rememberedEmail) {
-        document.getElementById("email").value = rememberedEmail;
-        document.getElementById("remember").checked = true;
-      }
-    };
-  </script>
+    </script>
 </body>
 </html>
