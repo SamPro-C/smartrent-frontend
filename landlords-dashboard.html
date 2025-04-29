@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SmartRent - Landlord Dashboard</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
   <style>
-    /* existing styles unchanged */
     :root {
       --primary: #3498db;
       --primary-dark: #2980b9;
@@ -21,226 +20,219 @@
       --white: #ffffff;
       --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    /* rest of styles unchanged */
-  </style>
-</head>
-   <script>
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-
-  if (!storedUser || storedUser.role !== "landlord") {
-    alert("Access denied. Please log in as a landlord.");
-    window.location.href = "login.html";
-  }
-</script>
-<body>
-  <!-- Top Navbar -->
-  <nav class="navbar">
-    <div class="logo">
-      <i class="fas fa-building"></i>
-      <span>SmartRent</span>
-    </div>
     
-   <ul class="nav-links">
-      <li><a href="landlords-dashboard.html" class="active">Dashboard</a></li>
-      <li><a href="landlords-apartments.html">Apartments</a></li>
-      <li><a href="landlords-tenants.html">Tenants</a></li>
-      <li><a href="landlords-workers.html">Workers</a></li>
-      <li><a href="landlords-payments.html">Payments</a></li>
-      <li><a href="landlords-reports.html">Reports</a></li>
-      <li><a href="landlords-notifications.html">Notifications</a></li>
-      <li><a href="landlords-settings.html">Settings</a></li>
-    </ul>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
     
-    <div class="nav-right">
-      <div class="notification">
-        <i class="fas fa-bell"></i>
-        <span class="notification-count">3</span>
-      </div>
-      
-      <div class="profile">
-        <img src="/api/placeholder/40/40" alt="Profile Picture" />
-        <span>John Doe</span>
-      </div>
-    </div>
+    body {
+      background-color: #f5f7fa;
+    }
     
-    <div class="hamburger">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  </nav>
-  
-  <!-- Main Content -->
-  <div class="main-content">
-    <!-- Welcome Section -->
-    <div class="welcome-section">
-      <h1>Welcome back, John!</h1>
-      <p>Here's what's happening with your properties today.</p>
-    </div>
+    .navbar {
+      background-color: var(--white);
+      box-shadow: var(--shadow);
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
     
-    <!-- Stats Cards -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="card-title">TOTAL APARTMENTS</div>
-        <div class="card-value">12</div>
-        <div class="card-info">3 added this month</div>
-        <div class="card-icon blue">
-          <i class="fas fa-building"></i>
-        </div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="card-title">TOTAL TENANTS</div>
-        <div class="card-value">48</div>
-        <div class="card-info">5 new this month</div>
-        <div class="card-icon green">
-          <i class="fas fa-users"></i>
-        </div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="card-title">PAID RENT THIS MONTH</div>
-        <div class="card-value">$32,450</div>
-        <div class="card-info">75% of total expected</div>
-        <div class="card-icon teal">
-          <i class="fas fa-dollar-sign"></i>
-        </div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="card-title">UNPAID RENT THIS MONTH</div>
-        <div class="card-value">Ksh 10,850</div>
-        <div class="card-info">25% remaining</div>
-        <div class="card-icon red">
-          <i class="fas fa-exclamation-circle"></i>
-        </div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="card-title">TOTAL WORKERS</div>
-        <div class="card-value">8</div>
-        <div class="card-info">2 active today</div>
-        <div class="card-icon orange">
-          <i class="fas fa-hard-hat"></i>
-        </div>
-      </div>
-    </div>
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+    }
     
-    <!-- Charts -->
-    <div class="charts-container">
-      <div class="chart-card">
-        <h3>Income vs Expenses</h3>
-        <div class="chart-container">
-          <canvas id="incomeChart"></canvas>
-        </div>
-      </div>
-      
-      <div class="chart-card">
-        <h3>Occupancy vs Vacancy</h3>
-        <div class="chart-container">
-          <canvas id="occupancyChart"></canvas>
-        </div>
-      </div>
-    </div>
+    .logo i {
+      margin-right: 0.5rem;
+    }
     
-    <!-- Activity and Notifications -->
-    <div class="activity-notifications">
-      <div class="activity-card">
-        <h3>
-          Recent Activity
-          <span class="view-all">View All</span>
-        </h3>
-        
-        <div class="activity-item">
-          <div class="activity-icon" style="background-color: var(--primary);">
-            <i class="fas fa-user-plus"></i>
-          </div>
-          <div class="activity-content">
-            <p><strong>New Tenant Added</strong></p>
-            <p>Sarah Johnson was added to Blue Heights, Unit 3B</p>
-            <span class="activity-time">Today, 10:24 AM</span>
-          </div>
-        </div>
-        
-        <div class="activity-item">
-          <div class="activity-icon" style="background-color: var(--secondary);">
-            <i class="fas fa-dollar-sign"></i>
-          </div>
-          <div class="activity-content">
-            <p><strong>Payment Received</strong></p>
-            <p>Michael Davis paid $1,200 for Green Valley, Unit 5A</p>
-            <span class="activity-time">Today, 9:15 AM</span>
-          </div>
-        </div>
-        
-        <div class="activity-item">
-          <div class="activity-icon" style="background-color: var(--info);">
-            <i class="fas fa-tools"></i>
-          </div>
-          <div class="activity-content">
-            <p><strong>Service Request Completed</strong></p>
-            <p>Plumbing issue in Parkview, Unit 2C was resolved</p>
-            <span class="activity-time">Yesterday, 4:30 PM</span>
-          </div>
-        </div>
-        
-        <div class="activity-item">
-          <div class="activity-icon" style="background-color: var(--warning);">
-            <i class="fas fa-exclamation-triangle"></i>
-          </div>
-          <div class="activity-content">
-            <p><strong>Late Payment Notice</strong></p>
-            <p>Reminder sent to 3 tenants with overdue payments</p>
-            <span class="activity-time">Yesterday, 11:20 AM</span>
-          </div>
-        </div>
-      </div>
-      
-      <div class="notifications-card">
-        <h3>
-          Recent Notifications
-          <span class="view-all">View All</span>
-        </h3>
-        
-        <div class="notification-item">
-          <div class="notification-icon" style="background-color: var(--danger);">
-            <i class="fas fa-bell"></i>
-          </div>
-          <div class="notification-content">
-            <p><strong>Urgent Service Request</strong></p>
-            <p>Water leak reported in Sunset Towers, Unit 7D</p>
-            <span class="notification-time">30 minutes ago</span>
-          </div>
-        </div>
-        
-        <div class="notification-item">
-          <div class="notification-icon" style="background-color: var(--warning);">
-            <i class="fas fa-calendar-alt"></i>
-          </div>
-          <div class="notification-content">
-            <p><strong>Rent Due Soon</strong></p>
-            <p>5 tenants have rent due in the next 3 days</p>
-            <span class="notification-time">2 hours ago</span>
-          </div>
-        </div>
-        
-        <div class="notification-item">
-          <div class="notification-icon" style="background-color: var(--info);">
-            <i class="fas fa-user-clock"></i>
-          </div>
-          <div class="notification-content">
-            <p><strong>Worker Schedule Updated</strong></p>
-            <p>James Wilson updated his availability for next week</p>
-            <span class="notification-time">Yesterday, 6:15 PM</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <script src="dashboard.js"></script>
-</body>
-</html>
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+    
+    .nav-links li {
+      margin: 0 0.8rem;
+    }
+    
+    .nav-links a {
+      text-decoration: none;
+      color: var(--dark);
+      font-weight: 500;
+      padding: 0.5rem 0.8rem;
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+    
+    .nav-links a:hover, .nav-links a.active {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+    
+    .nav-right {
+      display: flex;
+      align-items: center;
+    }
+    
+    .notification {
+      position: relative;
+      margin-right: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .notification-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: var(--danger);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.7rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .profile {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+      object-fit: cover;
+    }
+    
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background-color: var(--dark);
+      margin: 2px 0;
+      transition: all 0.3s;
+    }
+    
+    .main-content {
+      margin-top: 70px;
+      padding: 2rem;
+    }
+    
+    .welcome-section {
+      margin-bottom: 2rem;
+    }
+    
+    .welcome-section h1 {
+      font-size: 1.8rem;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background-color: var(--white);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .stat-card .card-title {
+      color: var(--gray);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-card .card-value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    
+    .stat-card .card-icon {
+      align-self: flex-end;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      margin-top: -45px;
+    }
+    
+    .card-icon.blue {
+      background-color: var(--primary);
+    }
+    
+    .card-icon.green {
+      background-color: var(--secondary);
+    }
+    
+    .card-icon.red {
+      background-color: var(--danger);
+    }
+    
+    .card-icon.orange {
+      background-color: var(--warning);
+    }
+    
+    .card-icon.teal {
+      background-color: var(--info);
+    }
+    
+    .charts-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .chart-card {
+      background-color: var(--white);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+    
+    .chart-card h3 {
+      margin-bottom: 1rem;
+      color: var(--dark);
+    }
+    
+    .chart-container {
+      height: 250px;
+      position: relative;
+    }
     
     .activity-notifications {
       display: grid;
@@ -343,6 +335,15 @@
     }
   </style>
 </head>
+
+<script>
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+
+  if (!storedUser || storedUser.role !== "landlord") {
+    alert("Access denied. Please log in as a landlord.");
+    window.location.href = "login.html";
+  }
+</script>
 <body>
   <!-- Top Navbar -->
   <nav class="navbar">
@@ -352,16 +353,15 @@
     </div>
     
     <ul class="nav-links">
-      <li><a href="index.html" class="active">Dashboard</a></li>
-      <li><a href="apartments.html">Apartments</a></li>
-      <li><a href="tenants.html">Tenants</a></li>
-      <li><a href="workers.html">Workers</a></li>
-      <li><a href="payments.html">Payments</a></li>
-      <li><a href="reports.html">Reports</a></li>
-      <li><a href="notifications.html">Notifications</a></li>
-      <li><a href="settings.html">Settings</a></li>
+      <li><a href="landlords-dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="landlords-apartments.html">Apartments</a></li>
+      <li><a href="landlords-tenants.html">Tenants</a></li>
+      <li><a href="landlords-workers.html" >Workers</a></li>
+      <li><a href="landlords-payments.html">Payments</a></li>
+      <li><a href="landlords-reports.html">Reports</a></li>
+      <li><a href="landlords-notifications.html">Notifications</a></li>
+      <li><a href="landlords-settings.html">Settings</a></li>
     </ul>
-    
     
     <div class="nav-right">
       <div class="notification">
@@ -421,7 +421,7 @@
       
       <div class="stat-card">
         <div class="card-title">UNPAID RENT THIS MONTH</div>
-        <div class="card-value">Ksh 10,850</div>
+        <div class="card-value">$10,850</div>
         <div class="card-info">25% remaining</div>
         <div class="card-icon red">
           <i class="fas fa-exclamation-circle"></i>
@@ -587,7 +587,7 @@
             beginAtZero: true,
             ticks: {
               callback: function(value) {
-                return 'Ksh ' + value.toLocaleString();
+                return '$' + value.toLocaleString();
               }
             }
           }
