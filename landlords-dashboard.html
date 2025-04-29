@@ -616,6 +616,16 @@
         }
       }
     });
+
+    <script>
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+
+  if (!storedUser || storedUser.role !== "landlord") {
+    alert("Access denied. Please log in as a landlord.");
+    window.location.href = "/login.html";
+  }
+</script>
+
   </script>
 </body>
 </html>
