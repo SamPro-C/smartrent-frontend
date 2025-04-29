@@ -6,6 +6,20 @@
     <title>SmartRent - Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    // Simulating a successful login (until backend is ready)
+const user = {
+  id: "123",
+  name: "John Doe",
+  role: "landlord",
+  email: "john@example.com",
+  token: "mock-jwt-token" // you can use any placeholder
+};
+
+localStorage.setItem("user", JSON.stringify(user));
+window.location.href = "/landlords-dashboard.html";
+    </script>
+
     <style>
         :root {
             --primary-color: #2563eb;
