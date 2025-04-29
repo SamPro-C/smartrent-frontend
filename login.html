@@ -709,6 +709,19 @@
                 }, 5000);
             }
         });
+
+        // Simulating a successful login (until backend is ready)
+const user = {
+  id: "123",
+  name: "John Doe",
+  role: "landlord",
+  email: "john@example.com",
+  token: "mock-jwt-token" // you can use any placeholder
+};
+
+localStorage.setItem("user", JSON.stringify(user));
+window.location.href = "landlord-dashboard.html";
+
     </script>
 </body>
 </html>
