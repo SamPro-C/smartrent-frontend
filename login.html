@@ -1,815 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartRent Login</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | SmartRent</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-color: #f5f7fa;
-      color: #333;
-    }
-
-    .login-container {
-      width: 380px;
-      background-color: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      overflow: hidden;
-    }
-
-    .form-header {
-      padding: 24px;
-      background: linear-gradient(135deg, #4a6cf7, #0c3483);
-      color: white;
-      text-align: center;
-    }
-
-    .logo {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 4px;
-      letter-spacing: 1px;
-    }
-
-    .subtitle {
-      font-size: 14px;
-      opacity: 0.8;
-    }
-
-    .form-body {
-      padding: 24px;
-    }
-
-    .auth-type-toggle {
-      display: flex;
-      margin-bottom: 24px;
-      border-bottom: 1px solid #eee;
-    }
-
-    .auth-type-toggle span {
-      padding: 10px 16px;
-      font-size: 14px;
-      cursor: pointer;
-      color: #777;
-      position: relative;
-      transition: 0.3s;
-    }
-
-    .auth-type-toggle span.active {
-      color: #4a6cf7;
-      font-weight: 600;
-    }
-
-    .auth-type-toggle span.active::after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background-color: #4a6cf7;
-    }
-
-    .role-selector {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 24px;
-    }
-
-    .role-option {
-      flex: 1 0 auto;
-      padding: 8px 12px;
-      text-align: center;
-      background-color: #f5f7fa;
-      border-radius: 6px;
-      color: #777;
-      cursor: pointer;
-      transition: 0.2s;
-      font-size: 13px;
-    }
-
-    .role-option:hover {
-      background-color: #e9ecef;
-    }
-
-    .role-option.active {
-      background-color: #4a6cf7;
-      color: white;
-    }
-
-    .form-group {
-      position: relative;
-      margin-bottom: 20px;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      background-color: #f9fafb;
-      font-size: 14px;
-      transition: 0.3s;
-    }
-
-    .form-group input:focus {
-      border-color: #4a6cf7;
-      background-color: white;
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
-    }
-
-    .form-group label {
-      position: absolute;
-      top: 50%;
-      left: 16px;
-      transform: translateY(-50%);
-      color: #777;
-      pointer-events: none;
-      transition: 0.3s;
-      font-size: 14px;
-      background-color: transparent;
-    }
-
-    .form-group input:focus ~ label,
-    .form-group input:valid ~ label {
-      top: 0;
-      left: 10px;
-      font-size: 12px;
-      padding: 0 6px;
-      background-color: white;
-      color: #4a6cf7;
-    }
-
-    .form-group .toggle-password {
-      position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #777;
-      cursor: pointer;
-    }
-
-    .options-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      font-size: 13px;
-    }
-
-    .remember-me {
-      display: flex;
-      align-items: center;
-      color: #555;
-    }
-
-    .remember-me input {
-      margin-right: 8px;
-    }
-
-    .forgot-password {
-      color: #4a6cf7;
-      cursor: pointer;
-    }
-
-    .login-button {
-      width: 100%;
-      padding: 12px;
-      background-color: #4a6cf7;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-      margin-bottom: 16px;
-    }
-
-    .login-button:hover:not(:disabled) {
-      background-color: #3451b2;
-    }
-
-    .login-button:disabled {
-      background-color: #c5d0f7;
-      cursor: not-allowed;
-    }
-
-    .signup-link {
-      text-align: center;
-      color: #555;
-      font-size: 14px;
-    }
-
-    .signup-link span {
-      color: #4a6cf7;
-      cursor: pointer;
-    }
-
-    .email-suggestions {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      width: 100%;
-      background: white;
-      border-radius: 0 0 8px 8px;
-      z-index: 10;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .email-suggestions.show {
-      max-height: 150px;
-      border: 1px solid #e0e0e0;
-      border-top: none;
-    }
-
-    .email-suggestion {
-      padding: 10px 16px;
-      cursor: pointer;
-      color: #555;
-      font-size: 13px;
-    }
-
-    .email-suggestion:hover {
-      background: #f5f7fa;
-      color: #4a6cf7;
-    }
-
-    .password-strength {
-      position: absolute;
-      bottom: -18px;
-      left: 0;
-      font-size: 12px;
-      transition: 0.3s;
-    }
-    
-    .password-strength.weak { color: #ff3860; }
-    .password-strength.medium { color: #f7b731; }
-    .password-strength.strong { color: #00cc88; }
-
-    /* Registration specific styles */
-    .step-indicator {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 24px;
-    }
-
-    .step {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background-color: #e0e0e0;
-      margin: 0 5px;
-      transition: 0.3s;
-    }
-
-    .step.active {
-      background-color: #4a6cf7;
-      transform: scale(1.2);
-    }
-
-    .verification-info {
-      font-size: 13px;
-      color: #555;
-      text-align: center;
-      margin: 16px 0;
-    }
-
-    .verification-info i {
-      color: #4a6cf7;
-      margin-right: 5px;
-    }
-
-    @media (max-width: 480px) {
-      .login-container {
-        width: 95%;
-      }
-    }
+    /* Use your existing styling here or paste from the previous version */
   </style>
 </head>
 <body>
+
   <div class="login-container">
-    <!-- Form Header -->
-    <div class="form-header">
-      <div class="logo">SMARTRENT</div>
-      <div class="subtitle">Property Management Made Simple</div>
-    </div>
-    
-    <!-- Login Form -->
-    <div class="login-form form-body">
-      <!-- Auth Type Toggle -->
-      <div class="auth-type-toggle">
-        <span class="active" data-type="login">Login</span>
-      </div>
-    
-      
+    <h2>SmartRent Login</h2>
+    <form id="loginForm">
       <div class="form-group">
+        <label for="email">Email Address</label>
         <input type="email" id="email" required>
-        <label>Email</label>
-        <div class="email-suggestions"></div>
       </div>
-      
-      <div class="form-group">
+
+      <div class="form-group password-wrapper">
+        <label for="password">Password</label>
         <input type="password" id="password" required>
-        <label>Password</label>
-        <i class="toggle-password fas fa-eye-slash"></i>
-        <div class="password-strength"></div>
+        <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
       </div>
-      
-      <div class="options-row">
-        <div class="remember-me">
-          <input type="checkbox" id="remember">
-          <label for="remember">Remember me</label>
-        </div>
-        <div class="forgot-password">Forgot password?</div>
+
+      <div class="form-group">
+        <label for="role">Login as</label>
+        <select id="role" required>
+          <option value="">Select role</option>
+          <option value="Tenant">Tenant</option>
+          <option value="Landlord">Landlord</option>
+          <option value="Shop Manager">Shop Manager</option>
+        </select>
       </div>
-      
-      <button class="login-button" disabled>Login</button>
-      <div class="signup-link">Don't have an account? <span class="signup-toggle">Sign up</span></div>
-    </div>
-    
-    <!-- Registration Form (Initially Hidden) -->
-    <div class="register-form form-body" style="display:none;">
-      <!-- Auth Type Toggle -->
-      <div class="auth-type-toggle">
-        <span data-type="login">Login</span>
-        <span class="active" data-type="register">Register</span>
+
+      <div class="remember-me">
+        <input type="checkbox" id="remember" />
+        <label for="remember">Remember Me</label>
       </div>
-      
-      <!-- Step Indicator -->
-      <div class="step-indicator">
-        <div class="step active"></div>
-        <div class="step"></div>
-        <div class="step"></div>
-      </div>
-      
-      <!-- Step 1: Role Selection -->
-      <div class="registration-step" id="step1">
-        <div class="role-selector">
-          <div class="role-option active" data-role="tenant">Tenant</div>
-          <div class="role-option" data-role="landlord">Landlord</div>
-          <div class="role-option" data-role="worker">Worker</div>
-        </div>
-        
-        <div class="form-group">
-          <input type="text" id="fullname" required>
-          <label>Full Name</label>
-        </div>
-        
-        <div class="form-group">
-          <input type="email" id="reg-email" required>
-          <label>Email</label>
-          <div class="email-suggestions"></div>
-        </div>
-        
-        <div class="form-group">
-          <input type="tel" id="phone" required>
-          <label>Phone Number</label>
-        </div>
-      </div>
-      
-      <!-- Step 2: Password & Details -->
-      <div class="registration-step" id="step2" style="display:none;">
-        <div class="form-group">
-          <input type="password" id="reg-password" required>
-          <label>Password</label>
-          <i class="toggle-password fas fa-eye-slash"></i>
-          <div class="password-strength"></div>
-        </div>
-        
-        <div class="form-group">
-          <input type="password" id="confirm-password" required>
-          <label>Confirm Password</label>
-          <i class="toggle-password fas fa-eye-slash"></i>
-        </div>
-        
-        <!-- Conditional fields for different roles -->
-        <div class="form-group landlord-field" style="display:none;">
-          <input type="text" id="company-name" required>
-          <label>Company/Property Name</label>
-        </div>
-        
-        <div class="form-group tenant-field">
-          <input type="text" id="id-number" required>
-          <label>ID Number</label>
-        </div>
-      </div>
-      
-      <!-- Step 3: Verification -->
-      <div class="registration-step" id="step3" style="display:none;">
-        <div class="verification-info">
-          <i class="fas fa-envelope"></i> We've sent a verification code to your email
-        </div>
-        
-        <div class="form-group">
-          <input type="text" id="verification-code" required>
-          <label>Verification Code</label>
-        </div>
-        
-        <div class="verification-info">
-          <i class="fas fa-info-circle"></i> Your account will be activated after approval
-        </div>
-      </div>
-      
-      <button class="login-button" id="register-next-btn">Next</button>
-      <div class="signup-link">Already have an account? <span id="back-to-login">Login</span></div>
-    </div>
+
+      <button type="submit" class="btn">Login</button>
+    </form>
   </div>
 
+  <div class="toast" id="toast"></div>
+
   <script>
-    // Initialize toast notifications
-    toastr.options = {
-      closeButton: true,
-      progressBar: true,
-      positionClass: "toast-top-right",
-      timeOut: 3000
-    };
+    const form = document.getElementById('loginForm');
+    const toast = document.getElementById('toast');
 
-    // DOM Elements - Login Form
-    const loginForm = document.querySelector('.login-form');
-    const registerForm = document.querySelector('.register-form');
-    const authToggle = document.querySelectorAll('.auth-type-toggle span');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const passwordToggles = document.querySelectorAll('.toggle-password');
-    const passwordStrengths = document.querySelectorAll('.password-strength');
-    const loginButton = document.querySelector('.login-button');
-    const roleOptions = document.querySelectorAll('.role-option');
-    const emailSuggestions = document.querySelectorAll('.email-suggestions');
-    const rememberMe = document.getElementById('remember');
-    const forgotPassword = document.querySelector('.forgot-password');
-    const signupToggle = document.querySelector('.signup-toggle');
-    const backToLoginLink = document.getElementById('back-to-login');
-    
-    // Registration Form Elements
-    const regNextBtn = document.getElementById('register-next-btn');
-    const regSteps = document.querySelectorAll('.registration-step');
-    const stepIndicators = document.querySelectorAll('.step');
-    let currentStep = 0;
-
-    // Common email domains for suggestions
-    const emailDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com'];
-
-    // Check for saved credentials
-    const savedEmail = localStorage.getItem('smartrent_email');
-    if (savedEmail) {
-      emailInput.value = savedEmail;
-      rememberMe.checked = true;
-      if (emailInput.value) {
-        emailInput.dispatchEvent(new Event('input'));
-      }
+    function togglePassword(id) {
+      const input = document.getElementById(id);
+      input.type = input.type === 'password' ? 'text' : 'password';
     }
 
-    // Toggle between Login and Register
-    authToggle.forEach(toggle => {
-      toggle.addEventListener('click', () => {
-        const type = toggle.dataset.type;
-        
-        // Update active toggle
-        authToggle.forEach(t => t.classList.remove('active'));
-        toggle.classList.add('active');
-        
-        // Show appropriate form
-        if (type === 'login') {
-          loginForm.style.display = 'block';
-          registerForm.style.display = 'none';
-        } else {
-          loginForm.style.display = 'none';
-          registerForm.style.display = 'block';
-          // Reset registration steps
-          currentStep = 0;
-          updateRegistrationStep();
-        }
-      });
-    });
-
-    // Toggle password visibility
-    passwordToggles.forEach(toggle => {
-      toggle.addEventListener('click', () => {
-        const passwordField = toggle.parentElement.querySelector('input');
-        
-        if (passwordField.type === 'password') {
-          passwordField.type = 'text';
-          toggle.classList.remove('fa-eye-slash');
-          toggle.classList.add('fa-eye');
-        } else {
-          passwordField.type = 'password';
-          toggle.classList.remove('fa-eye');
-          toggle.classList.add('fa-eye-slash');
-        }
-      });
-    });
-
-    // Role selector
-    roleOptions.forEach(option => {
-      option.addEventListener('click', () => {
-        const parentForm = option.closest('.login-form, .register-form');
-        const roleOptions = parentForm.querySelectorAll('.role-option');
-        
-        roleOptions.forEach(opt => opt.classList.remove('active'));
-        option.classList.add('active');
-        
-        // Show role-specific message
-        const role = option.dataset.role;
-        toastr.info(`Switching to ${role.charAt(0).toUpperCase() + role.slice(1)} login`);
-        
-        // Update role-specific fields in registration
-        if (parentForm.classList.contains('register-form') && currentStep === 1) {
-          updateRegistrationStep();
-        }
-      });
-    });
-
-    // Email suggestions
-    document.querySelectorAll('input[type="email"]').forEach(input => {
-      input.addEventListener('input', () => {
-        const value = input.value;
-        const suggestions = input.nextElementSibling;
-        
-        if (value.includes('@') && !value.includes('.')) {
-          // Show suggestions
-          suggestions.innerHTML = '';
-          suggestions.classList.add('show');
-          
-          const domain = value.split('@')[1];
-          
-          emailDomains.forEach(emailDomain => {
-            if (emailDomain.startsWith(domain)) {
-              const suggestion = document.createElement('div');
-              suggestion.className = 'email-suggestion';
-              suggestion.textContent = `${value.split('@')[0]}@${emailDomain}`;
-              
-              suggestion.addEventListener('click', () => {
-                input.value = suggestion.textContent;
-                suggestions.classList.remove('show');
-                validateForm();
-              });
-              
-              suggestions.appendChild(suggestion);
-            }
-          });
-          
-          if (suggestions.children.length === 0) {
-            suggestions.classList.remove('show');
-          }
-        } else {
-          suggestions.classList.remove('show');
-        }
-        
-        validateForm();
-      });
-    });
-
-    // Password strength checker
-    document.querySelectorAll('input[type="password"]').forEach(input => {
-      const strengthIndicator = input.parentElement.querySelector('.password-strength');
-      if (strengthIndicator) {
-        input.addEventListener('input', () => {
-          const value = input.value;
-          
-          if (value.length === 0) {
-            strengthIndicator.textContent = '';
-            strengthIndicator.className = 'password-strength';
-          } else if (value.length < 8) {
-            strengthIndicator.textContent = 'Weak password';
-            strengthIndicator.className = 'password-strength weak';
-          } else if (value.length < 12 || !/[A-Z]/.test(value) || !/[0-9]/.test(value)) {
-            strengthIndicator.textContent = 'Medium password';
-            strengthIndicator.className = 'password-strength medium';
-          } else {
-            strengthIndicator.textContent = 'Strong password';
-            strengthIndicator.className = 'password-strength strong';
-          }
-          
-          validateForm();
-        });
-      }
-    });
-
-    // Handle clicking outside email suggestions
-    document.addEventListener('click', (e) => {
-      emailSuggestions.forEach(suggestions => {
-        if (!suggestions.previousElementSibling.contains(e.target) && !suggestions.contains(e.target)) {
-          suggestions.classList.remove('show');
-        }
-      });
-    });
-
-    // Validate form
-    function validateForm() {
-      const isLoginForm = loginForm.style.display !== 'none';
-      
-      if (isLoginForm) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const isEmailValid = emailRegex.test(emailInput.value);
-        const isPasswordValid = passwordInput.value.length >= 6;
-        
-        loginButton.disabled = !isEmailValid || !isPasswordValid;
-      } else {
-        // Registration validation logic based on current step
-        if (currentStep === 0) {
-          const fullnameInput = document.getElementById('fullname');
-          const regEmailInput = document.getElementById('reg-email');
-          const phoneInput = document.getElementById('phone');
-          
-          const isFullnameValid = fullnameInput.value.trim().length > 0;
-          const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(regEmailInput.value);
-          const isPhoneValid = phoneInput.value.trim().length >= 9;
-          
-          regNextBtn.disabled = !isFullnameValid || !isEmailValid || !isPhoneValid;
-        } else if (currentStep === 1) {
-          const regPasswordInput = document.getElementById('reg-password');
-          const confirmPasswordInput = document.getElementById('confirm-password');
-          const idNumberInput = document.getElementById('id-number');
-          
-          const isPasswordValid = regPasswordInput.value.length >= 8;
-          const doPasswordsMatch = regPasswordInput.value === confirmPasswordInput.value;
-          const isIdValid = idNumberInput && !idNumberInput.parentElement.style.display === 'none' ? 
-                           idNumberInput.value.trim().length > 0 : true;
-          
-          regNextBtn.disabled = !isPasswordValid || !doPasswordsMatch || !isIdValid;
-        } else if (currentStep === 2) {
-          const verificationInput = document.getElementById('verification-code');
-          regNextBtn.disabled = verificationInput.value.trim().length !== 6;
-        }
-      }
+    function showToast(message, success = false) {
+      toast.textContent = message;
+      toast.className = "toast" + (success ? " success" : "");
+      toast.style.display = "block";
+      setTimeout(() => { toast.style.display = "none"; }, 3500);
     }
 
-    // Login button functionality
-    loginButton.addEventListener('click', () => {
-      // Simulate loading state
-      loginButton.disabled = true;
-      loginButton.textContent = 'Logging in...';
-      
-      // Simulate API call with timeout
-      setTimeout(() => {
-        // For demo purposes - successful login for specific credentials
-        if (emailInput.value === 'demo@smartrent.com' && passwordInput.value === 'password123') {
-          toastr.success('Login successful! Redirecting...');
-          
-          // Save credentials if remember me is checked
-          if (rememberMe.checked) {
-            localStorage.setItem('smartrent_email', emailInput.value);
-          } else {
-            localStorage.removeItem('smartrent_email');
-          }
-          
-          // Simulate redirect
-          setTimeout(() => {
-            toastr.info('This is a demo. Redirect would happen here.');
-            loginButton.textContent = 'Login';
-            loginButton.disabled = false;
-          }, 2000);
-        } else {
-          // Failed login
-          toastr.error('Invalid email or password');
-          loginButton.textContent = 'Login';
-          loginButton.disabled = false;
-        }
-      }, 1500);
-    });
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    // Forgot password functionality
-    forgotPassword.addEventListener('click', () => {
-      const email = emailInput.value;
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      
-      if (!emailRegex.test(email)) {
-        toastr.warning('Please enter a valid email first');
-        emailInput.focus();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const role = document.getElementById("role").value;
+      const remember = document.getElementById("remember").checked;
+
+      if (!email || !password || !role) {
+        showToast("Please fill all fields");
         return;
       }
-      
-      // Simulate password reset request
-      toastr.info('Password reset link sent to your email');
-    });
 
-    // Registration next step
-    regNextBtn.addEventListener('click', () => {
-      if (currentStep < 2) {
-        currentStep++;
-        updateRegistrationStep();
-        
-        // For step 2, simulate sending verification code
-        if (currentStep === 2) {
-          const regEmailInput = document.getElementById('reg-email');
-          toastr.info(`Verification code sent to ${regEmailInput.value}`);
+      if (!/^\S+@\S+\.\S+$/.test(email)) {
+        showToast("Invalid email format");
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, role })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.message || "Login failed");
+
+        if (remember) {
+          localStorage.setItem("rememberedEmail", email);
+        } else {
+          localStorage.removeItem("rememberedEmail");
         }
-      } else {
-        // Handle form submission
-        const fullnameInput = document.getElementById('fullname');
-        
-        // Show loading state
-        regNextBtn.disabled = true;
-        regNextBtn.textContent = 'Processing...';
-        
-        // Simulate API call with timeout
+
+        // Optional: store token or session info here
+        localStorage.setItem("userRole", role);
+
+        showToast("Login successful!", true);
         setTimeout(() => {
-          toastr.success(`Registration successful! Welcome, ${fullnameInput.value}. Please wait for approval.`);
-          
-          // Switch back to login
-          setTimeout(() => {
-            document.querySelector('[data-type="login"]').click();
-          }, 2000);
+          // Redirect based on role
+          if (role === "Tenant") window.location.href = "/tenant/dashboard.html";
+          else if (role === "Landlord") window.location.href = "/landlord/dashboard.html";
+          else window.location.href = "/shop/dashboard.html";
         }, 1500);
+
+      } catch (err) {
+        showToast(err.message);
       }
     });
 
-    // Update registration step display
-    function updateRegistrationStep() {
-      regSteps.forEach((step, index) => {
-        step.style.display = index === currentStep ? 'block' : 'none';
-      });
-      
-      stepIndicators.forEach((indicator, index) => {
-        indicator.classList.toggle('active', index <= currentStep);
-      });
-      
-      // Update button text on last step
-      regNextBtn.textContent = currentStep === 2 ? 'Create Account' : 'Next';
-      
-      // Show/hide role-specific fields
-      if (currentStep === 1) {
-        const activeRole = document.querySelector('.register-form .role-option.active').dataset.role;
-        document.querySelector('.landlord-field').style.display = activeRole === 'landlord' ? 'block' : 'none';
-        document.querySelector('.tenant-field').style.display = activeRole === 'tenant' ? 'block' : 'none';
+    // Pre-fill remembered email if any
+    window.onload = () => {
+      const rememberedEmail = localStorage.getItem("rememberedEmail");
+      if (rememberedEmail) {
+        document.getElementById("email").value = rememberedEmail;
+        document.getElementById("remember").checked = true;
       }
-    }
-
-    // Add keypress event for login
-    [emailInput, passwordInput].forEach(input => {
-      input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !loginButton.disabled) {
-          loginButton.click();
-        }
-      });
-    });
-
-    // Add validation for registration form inputs
-    document.querySelectorAll('.register-form input').forEach(input => {
-      input.addEventListener('input', validateForm);
-    });
-
-    // Add confirmation password match validation
-    const regPasswordInput = document.getElementById('reg-password');
-    const confirmPasswordInput = document.getElementById('confirm-password');
-    
-    confirmPasswordInput.addEventListener('input', () => {
-      if (regPasswordInput.value !== confirmPasswordInput.value && confirmPasswordInput.value !== '') {
-        confirmPasswordInput.style.borderColor = '#ff3860';
-      } else {
-        confirmPasswordInput.style.borderColor = confirmPasswordInput.value ? '#4a6cf7' : '#e0e0e0';
-      }
-      validateForm();
-    });
-
-    // Signup toggle event
-    signupToggle.addEventListener('click', () => {
-      document.querySelector('[data-type="register"]').click();
-    });
-
-    // Back to login event
-    backToLoginLink.addEventListener('click', () => {
-      document.querySelector('[data-type="login"]').click();
-    });
-
-    // Initial form validation
-    validateForm();
-
-    // Demo credentials helper - add a small hint after a few seconds
-    setTimeout(() => {
-      const demoHint = document.createElement('div');
-      demoHint.className = 'verification-info';
-      demoHint.innerHTML = '<i class="fas fa-info-circle"></i> Demo: demo@smartrent.com / password123';
-      demoHint.style.cursor = 'pointer';
-      demoHint.onclick = () => {
-        emailInput.value = 'demo@smartrent.com';
-        passwordInput.value = 'password123';
-        validateForm();
-      };
-      
-      loginForm.appendChild(demoHint);
-    }, 3000);
+    };
   </script>
 </body>
 </html>
