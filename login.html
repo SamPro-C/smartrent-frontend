@@ -13,7 +13,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
@@ -21,343 +21,206 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background-color: #121417;
-      background-image: radial-gradient(circle at center, #1d2127, #121417);
+      background-color: #f5f7fa;
+      color: #333;
     }
 
     .login-container {
-      position: relative;
       width: 380px;
-      height: 580px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .login-form {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 1;
-      padding: 20px;
-    }
-
-    .circle-border {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
       overflow: hidden;
     }
 
-    .circle-border::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: conic-gradient(
-        transparent, 
-        transparent, 
-        transparent, 
-        #00F0FF
-      );
-      animation: rotate 4s linear infinite;
-    }
-
-    .circle-border::after {
-      content: '';
-      position: absolute;
-      inset: 6px;
-      background: #1a1d21;
-      border-radius: 50%;
-    }
-
-    @keyframes rotate {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
+    .form-header {
+      padding: 24px;
+      background: linear-gradient(135deg, #4a6cf7, #0c3483);
+      color: white;
+      text-align: center;
     }
 
     .logo {
-      width: 140px;
-      height: 40px;
-      margin-bottom: 15px;
-      background: #00F0FF;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 5px;
-      font-weight: bold;
-      color: #121417;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      letter-spacing: 1px;
     }
 
-    .login-title {
-      color: #00F0FF;
-      margin-bottom: 20px;
-      font-size: 24px;
-      font-weight: 500;
+    .subtitle {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .form-body {
+      padding: 24px;
+    }
+
+    .auth-type-toggle {
+      display: flex;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .auth-type-toggle span {
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #777;
+      position: relative;
+      transition: 0.3s;
+    }
+
+    .auth-type-toggle span.active {
+      color: #4a6cf7;
+      font-weight: 600;
+    }
+
+    .auth-type-toggle span.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: #4a6cf7;
     }
 
     .role-selector {
       display: flex;
       flex-wrap: wrap;
-      width: 85%;
-      margin-bottom: 20px;
-      background: #1c1f23;
-      border-radius: 50px;
-      overflow: hidden;
+      gap: 8px;
+      margin-bottom: 24px;
     }
 
     .role-option {
-      flex: 1 0 50%;
+      flex: 1 0 auto;
+      padding: 8px 12px;
       text-align: center;
-      padding: 10px 0;
+      background-color: #f5f7fa;
+      border-radius: 6px;
       color: #777;
       cursor: pointer;
-      transition: 0.3s;
+      transition: 0.2s;
       font-size: 13px;
     }
 
-    .role-option:nth-child(1), .role-option:nth-child(2) {
-      flex-basis: 33.33%;
-    }
-
-    .role-option:nth-child(3), .role-option:nth-child(4), .role-option:nth-child(5) {
-      flex-basis: 33.33%;
+    .role-option:hover {
+      background-color: #e9ecef;
     }
 
     .role-option.active {
-      background: #00F0FF;
-      color: #121417;
-      font-weight: 600;
+      background-color: #4a6cf7;
+      color: white;
     }
 
     .form-group {
       position: relative;
-      width: 85%;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     .form-group input {
       width: 100%;
-      padding: 10px 15px;
-      border: 1px solid #2a3035;
-      border-radius: 50px;
-      background-color: #1c1f23;
-      color: #fff;
+      padding: 12px 16px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      background-color: #f9fafb;
       font-size: 14px;
+      transition: 0.3s;
+    }
+
+    .form-group input:focus {
+      border-color: #4a6cf7;
+      background-color: white;
       outline: none;
-      transition: 0.3s ease;
+      box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
     }
 
     .form-group label {
       position: absolute;
       top: 50%;
-      left: 20px;
+      left: 16px;
       transform: translateY(-50%);
-      font-size: 14px;
       color: #777;
       pointer-events: none;
-      transition: 0.3s ease;
+      transition: 0.3s;
+      font-size: 14px;
+      background-color: transparent;
     }
 
     .form-group input:focus ~ label,
     .form-group input:valid ~ label {
-      top: 1px;
-      left: 20px;
-      font-size: 10px;
-      padding: 0 5px;
-      background: #1f293a;
-      color: #00F0FF;
-    }
-
-    .form-group input:focus,
-    .form-group input:valid {
-      border-color: #00F0FF;
+      top: 0;
+      left: 10px;
+      font-size: 12px;
+      padding: 0 6px;
+      background-color: white;
+      color: #4a6cf7;
     }
 
     .form-group .toggle-password {
       position: absolute;
-      right: 15px;
+      right: 16px;
       top: 50%;
       transform: translateY(-50%);
       color: #777;
       cursor: pointer;
-      transition: 0.3s;
-      z-index: 2;
     }
-
-    .form-group .toggle-password:hover {
-      color: #00F0FF;
-    }
-    
-    .password-strength {
-      position: absolute;
-      bottom: -15px;
-      left: 20px;
-      font-size: 10px;
-      color: #777;
-      transition: 0.3s;
-    }
-    
-    .password-strength.weak { color: #ff3860; }
-    .password-strength.medium { color: #ffdd57; }
-    .password-strength.strong { color: #00cc88; }
 
     .options-row {
       display: flex;
       justify-content: space-between;
-      width: 85%;
-      margin-bottom: 5px;
+      align-items: center;
+      margin-bottom: 24px;
+      font-size: 13px;
     }
 
     .remember-me {
       display: flex;
       align-items: center;
-      font-size: 12px;
-      color: #888;
+      color: #555;
     }
 
     .remember-me input {
-      margin-right: 5px;
+      margin-right: 8px;
     }
 
     .forgot-password {
-      color: #888;
-      font-size: 12px;
-      text-align: right;
+      color: #4a6cf7;
       cursor: pointer;
-      transition: color 0.3s;
-    }
-
-    .forgot-password:hover {
-      color: #00F0FF;
     }
 
     .login-button {
-      background-color: #00F0FF;
-      color: #121417;
+      width: 100%;
+      padding: 12px;
+      background-color: #4a6cf7;
+      color: white;
       border: none;
-      padding: 10px 0;
-      width: 85%;
-      border-radius: 50px;
+      border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
-      margin-top: 20px;
       transition: 0.3s;
+      margin-bottom: 16px;
     }
 
     .login-button:hover:not(:disabled) {
-      background-color: #00d8e6;
-      transform: scale(1.03);
+      background-color: #3451b2;
     }
 
     .login-button:disabled {
-      background-color: #2a3035;
-      color: #777;
+      background-color: #c5d0f7;
       cursor: not-allowed;
     }
 
-    .auth-type-toggle {
-      width: 85%;
-      display: flex;
-      justify-content: center;
-      margin: 10px 0;
-    }
-
-    .auth-type-toggle span {
-      cursor: pointer;
-      padding: 5px 15px;
-      font-size: 14px;
-      color: #777;
-      transition: 0.3s;
-    }
-
-    .auth-type-toggle span.active {
-      color: #00F0FF;
-      font-weight: 600;
-    }
-
-    .auth-type-toggle span:hover:not(.active) {
-      color: #aaa;
-    }
-
-    .verification-info {
-      width: 85%;
-      margin: 10px 0;
-      font-size: 12px;
-      color: #888;
-      text-align: center;
-    }
-
-    .verification-info i {
-      color: #00F0FF;
-      margin-right: 5px;
-    }
-
-    .recaptcha-container {
-      width: 85%;
-      margin: 15px 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 40px;
-      background-color: #1c1f23;
-      border-radius: 5px;
-      color: #777;
-      font-size: 12px;
-    }
-
     .signup-link {
-      margin-top: 15px;
-      color: #00F0FF;
+      text-align: center;
+      color: #555;
       font-size: 14px;
+    }
+
+    .signup-link span {
+      color: #4a6cf7;
       cursor: pointer;
-      transition: color 0.3s;
-    }
-
-    .signup-link:hover {
-      color: #00d8e6;
-      text-decoration: underline;
-    }
-
-    .toast-container {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 9999;
-    }
-
-    .toast {
-      padding: 15px 20px;
-      border-radius: 5px;
-      color: white;
-      margin-bottom: 10px;
-      min-width: 250px;
-      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      animation: slideIn 0.3s ease-out;
-    }
-
-    .toast.success { background-color: #00cc88; }
-    .toast.error { background-color: #ff3860; }
-    .toast.warning { background-color: #ffdd57; color: #121417; }
-    .toast.info { background-color: #00F0FF; color: #121417; }
-
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
     }
 
     .email-suggestions {
@@ -365,125 +228,100 @@
       top: 100%;
       left: 0;
       width: 100%;
-      background: #1c1f23;
-      border-radius: 5px;
+      background: white;
+      border-radius: 0 0 8px 8px;
       z-index: 10;
       max-height: 0;
       overflow: hidden;
       transition: max-height 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .email-suggestions.show {
       max-height: 150px;
-      border: 1px solid #2a3035;
-      margin-top: 5px;
+      border: 1px solid #e0e0e0;
+      border-top: none;
     }
 
     .email-suggestion {
-      padding: 8px 15px;
+      padding: 10px 16px;
       cursor: pointer;
-      color: #777;
+      color: #555;
       font-size: 13px;
     }
 
     .email-suggestion:hover {
-      background: #282d33;
-      color: #00F0FF;
+      background: #f5f7fa;
+      color: #4a6cf7;
     }
 
-    .phone-code {
+    .password-strength {
       position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #777;
-      font-size: 14px;
+      bottom: -18px;
+      left: 0;
+      font-size: 12px;
+      transition: 0.3s;
     }
+    
+    .password-strength.weak { color: #ff3860; }
+    .password-strength.medium { color: #f7b731; }
+    .password-strength.strong { color: #00cc88; }
 
-    .form-group.with-code input {
-      padding-left: 55px;
-    }
-
-    .form-group.hidden {
-      display: none;
-    }
-
-    .register-form {
-      width: 100%;
-      height: 100%;
-      display: none;
-    }
-
+    /* Registration specific styles */
     .step-indicator {
       display: flex;
       justify-content: center;
-      margin-bottom: 15px;
-      width: 85%;
+      margin-bottom: 24px;
     }
 
     .step {
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background-color: #2a3035;
+      background-color: #e0e0e0;
       margin: 0 5px;
       transition: 0.3s;
     }
 
     .step.active {
-      background-color: #00F0FF;
+      background-color: #4a6cf7;
       transform: scale(1.2);
+    }
+
+    .verification-info {
+      font-size: 13px;
+      color: #555;
+      text-align: center;
+      margin: 16px 0;
+    }
+
+    .verification-info i {
+      color: #4a6cf7;
+      margin-right: 5px;
     }
 
     @media (max-width: 480px) {
       .login-container {
-        width: 90%;
-        height: auto;
-        padding: 30px 0;
-      }
-
-      .circle-border {
-        border-radius: 20px;
-      }
-
-      .circle-border::after {
-        border-radius: 20px;
-      }
-      
-      .login-form {
-        padding: 40px 20px;
-      }
-
-      .role-option {
-        font-size: 11px;
+        width: 95%;
       }
     }
   </style>
 </head>
 <body>
   <div class="login-container">
-    <div class="circle-border"></div>
+    <!-- Form Header -->
+    <div class="form-header">
+      <div class="logo">SMARTRENT</div>
+      <div class="subtitle">Property Management Made Simple</div>
+    </div>
     
     <!-- Login Form -->
-    <div class="login-form">
-      <div class="logo">SMARTRENT</div>
-      
+    <div class="login-form form-body">
       <!-- Auth Type Toggle -->
       <div class="auth-type-toggle">
         <span class="active" data-type="login">Login</span>
-        <span data-type="register">Register</span>
       </div>
-      
-      <h2 class="login-title">Login</h2>
-      
-      <!-- Expanded Role Selector -->
-      <div class="role-selector">
-        <div class="role-option active" data-role="tenant">Tenant</div>
-        <div class="role-option" data-role="landlord">Landlord</div>
-        <div class="role-option" data-role="worker">Worker</div>
-        <div class="role-option" data-role="shop">Shop Manager</div>
-        <div class="role-option" data-role="admin">Admin</div>
-      </div>
+    
       
       <div class="form-group">
         <input type="email" id="email" required>
@@ -506,28 +344,17 @@
         <div class="forgot-password">Forgot password?</div>
       </div>
       
-      <div class="verification-info">
-        <i class="fas fa-shield-alt"></i> Secure login with email/SMS verification
-      </div>
-      
-      <div class="recaptcha-container">
-        <i class="fas fa-shield-alt" style="color: #00F0FF; margin-right: 5px;"></i> Protected by reCAPTCHA v3
-      </div>
-      
       <button class="login-button" disabled>Login</button>
-      <div class="signup-link">Create an account</div>
+      <div class="signup-link">Don't have an account? <span class="signup-toggle">Sign up</span></div>
     </div>
     
     <!-- Registration Form (Initially Hidden) -->
-    <div class="register-form">
-      <div class="logo">SMARTRENT</div>
-      
+    <div class="register-form form-body" style="display:none;">
+      <!-- Auth Type Toggle -->
       <div class="auth-type-toggle">
         <span data-type="login">Login</span>
         <span class="active" data-type="register">Register</span>
       </div>
-      
-      <h2 class="login-title">Create Account</h2>
       
       <!-- Step Indicator -->
       <div class="step-indicator">
@@ -542,7 +369,6 @@
           <div class="role-option active" data-role="tenant">Tenant</div>
           <div class="role-option" data-role="landlord">Landlord</div>
           <div class="role-option" data-role="worker">Worker</div>
-          <div class="role-option" data-role="shop">Shop Manager</div>
         </div>
         
         <div class="form-group">
@@ -556,8 +382,7 @@
           <div class="email-suggestions"></div>
         </div>
         
-        <div class="form-group with-code">
-          <span class="phone-code">+254</span>
+        <div class="form-group">
           <input type="tel" id="phone" required>
           <label>Phone Number</label>
         </div>
@@ -579,8 +404,8 @@
         </div>
         
         <!-- Conditional fields for different roles -->
-        <div class="form-group landlord-field hidden">
-          <input type="text" id="company-name">
+        <div class="form-group landlord-field" style="display:none;">
+          <input type="text" id="company-name" required>
           <label>Company/Property Name</label>
         </div>
         
@@ -602,16 +427,12 @@
         </div>
         
         <div class="verification-info">
-          <i class="fas fa-info-circle"></i> Your account will be activated after landlord/admin approval
+          <i class="fas fa-info-circle"></i> Your account will be activated after approval
         </div>
       </div>
       
-      <div class="recaptcha-container">
-        <i class="fas fa-shield-alt" style="color: #00F0FF; margin-right: 5px;"></i> Protected by reCAPTCHA v3
-      </div>
-      
       <button class="login-button" id="register-next-btn">Next</button>
-      <div class="signup-link" id="back-to-login">Already have an account? Login</div>
+      <div class="signup-link">Already have an account? <span id="back-to-login">Login</span></div>
     </div>
   </div>
 
@@ -637,8 +458,7 @@
     const emailSuggestions = document.querySelectorAll('.email-suggestions');
     const rememberMe = document.getElementById('remember');
     const forgotPassword = document.querySelector('.forgot-password');
-    const recaptchaContainer = document.querySelectorAll('.recaptcha-container');
-    const signupLink = document.querySelector('.signup-link');
+    const signupToggle = document.querySelector('.signup-toggle');
     const backToLoginLink = document.getElementById('back-to-login');
     
     // Registration Form Elements
@@ -650,41 +470,15 @@
     // Common email domains for suggestions
     const emailDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com'];
 
-    // Animation when the page loads
-    document.addEventListener('DOMContentLoaded', () => {
-      const container = document.querySelector('.login-container');
-      container.style.opacity = '0';
-      
-      setTimeout(() => {
-        container.style.transition = 'opacity 1s ease';
-        container.style.opacity = '1';
-      }, 300);
-
-      // Check for saved credentials
-      const savedEmail = localStorage.getItem('smartrent_email');
-      if (savedEmail) {
-        emailInput.value = savedEmail;
-        rememberMe.checked = true;
-        if (emailInput.value) {
-          emailInput.dispatchEvent(new Event('input'));
-        }
+    // Check for saved credentials
+    const savedEmail = localStorage.getItem('smartrent_email');
+    if (savedEmail) {
+      emailInput.value = savedEmail;
+      rememberMe.checked = true;
+      if (emailInput.value) {
+        emailInput.dispatchEvent(new Event('input'));
       }
-    });
-
-    // Float animation for the forms
-    let floatAnimation = () => {
-      const activeForm = document.querySelector('.login-form:not([style*="display: none"]), .register-form:not([style*="display: none"])');
-      if (activeForm) {
-        activeForm.style.transform = 'translateY(-3px)';
-        setTimeout(() => {
-          activeForm.style.transform = 'translateY(3px)';
-        }, 1000);
-      }
-    };
-
-    loginForm.style.transition = 'transform 2s ease-in-out';
-    registerForm.style.transition = 'transform 2s ease-in-out';
-    setInterval(floatAnimation, 2000);
+    }
 
     // Toggle between Login and Register
     authToggle.forEach(toggle => {
@@ -697,11 +491,11 @@
         
         // Show appropriate form
         if (type === 'login') {
-          loginForm.style.display = 'flex';
+          loginForm.style.display = 'block';
           registerForm.style.display = 'none';
         } else {
           loginForm.style.display = 'none';
-          registerForm.style.display = 'flex';
+          registerForm.style.display = 'block';
           // Reset registration steps
           currentStep = 0;
           updateRegistrationStep();
@@ -709,45 +503,22 @@
       });
     });
 
-    // Registration next step
-    regNextBtn.addEventListener('click', () => {
-      if (currentStep < 2) {
-        currentStep++;
-        updateRegistrationStep();
-      } else {
-        // Handle form submission
-        toastr.success('Registration submitted! Please wait for approval.');
-        setTimeout(() => {
-          // Switch back to login
-          document.querySelector('[data-type="login"]').click();
-        }, 2000);
-      }
+    // Toggle password visibility
+    passwordToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const passwordField = toggle.parentElement.querySelector('input');
+        
+        if (passwordField.type === 'password') {
+          passwordField.type = 'text';
+          toggle.classList.remove('fa-eye-slash');
+          toggle.classList.add('fa-eye');
+        } else {
+          passwordField.type = 'password';
+          toggle.classList.remove('fa-eye');
+          toggle.classList.add('fa-eye-slash');
+        }
+      });
     });
-
-    // Update registration step display
-    function updateRegistrationStep() {
-      regSteps.forEach((step, index) => {
-        step.style.display = index === currentStep ? 'block' : 'none';
-      });
-      
-      stepIndicators.forEach((indicator, index) => {
-        indicator.classList.toggle('active', index <= currentStep);
-      });
-      
-      // Update button text on last step
-      regNextBtn.textContent = currentStep === 2 ? 'Submit' : 'Next';
-      
-      // Show/hide role-specific fields
-      if (currentStep === 1) {
-        const activeRole = document.querySelector('.register-form .role-option.active').dataset.role;
-        document.querySelectorAll('.landlord-field').forEach(field => {
-          field.classList.toggle('hidden', activeRole !== 'landlord');
-        });
-        document.querySelectorAll('.tenant-field').forEach(field => {
-          field.classList.toggle('hidden', activeRole !== 'tenant');
-        });
-      }
-    }
 
     // Role selector
     roleOptions.forEach(option => {
@@ -765,23 +536,6 @@
         // Update role-specific fields in registration
         if (parentForm.classList.contains('register-form') && currentStep === 1) {
           updateRegistrationStep();
-        }
-      });
-    });
-
-    // Toggle password visibility
-    passwordToggles.forEach(toggle => {
-      toggle.addEventListener('click', () => {
-        const passwordField = toggle.previousElementSibling;
-        
-        if (passwordField.type === 'password') {
-          passwordField.type = 'text';
-          toggle.classList.remove('fa-eye-slash');
-          toggle.classList.add('fa-eye');
-        } else {
-          passwordField.type = 'password';
-          toggle.classList.remove('fa-eye');
-          toggle.classList.add('fa-eye-slash');
         }
       });
     });
@@ -890,7 +644,7 @@
           
           const isPasswordValid = regPasswordInput.value.length >= 8;
           const doPasswordsMatch = regPasswordInput.value === confirmPasswordInput.value;
-          const isIdValid = idNumberInput && !idNumberInput.classList.contains('hidden') ? 
+          const isIdValid = idNumberInput && !idNumberInput.parentElement.style.display === 'none' ? 
                            idNumberInput.value.trim().length > 0 : true;
           
           regNextBtn.disabled = !isPasswordValid || !doPasswordsMatch || !isIdValid;
@@ -899,7 +653,7 @@
           regNextBtn.disabled = verificationInput.value.trim().length !== 6;
         }
       }
-    }// Continuing the existing script...
+    }
 
     // Login button functionality
     loginButton.addEventListener('click', () => {
@@ -931,15 +685,6 @@
           toastr.error('Invalid email or password');
           loginButton.textContent = 'Login';
           loginButton.disabled = false;
-          
-          // Add shake animation to input fields
-          [emailInput, passwordInput].forEach(input => {
-            input.style.borderColor = '#ff3860';
-            input.style.animation = 'shake 0.5s';
-            setTimeout(() => {
-              input.style.animation = '';
-            }, 500);
-          });
         }
       }, 1500);
     });
@@ -957,145 +702,13 @@
       
       // Simulate password reset request
       toastr.info('Password reset link sent to your email');
-      
-      // Display a temporary password reset message
-      const passwordField = document.querySelector('.form-group:nth-child(4)');
-      const resetInfo = document.createElement('div');
-      resetInfo.className = 'verification-info';
-      resetInfo.innerHTML = '<i class="fas fa-envelope"></i> Check your email for password reset instructions';
-      resetInfo.style.marginTop = '10px';
-      
-      passwordField.appendChild(resetInfo);
-      setTimeout(() => passwordField.removeChild(resetInfo), 5000);
     });
 
-    // Signup link functionality
-    signupLink.addEventListener('click', () => {
-      document.querySelector('[data-type="register"]').click();
-    });
-
-    // Add keypress event for login
-    [emailInput, passwordInput].forEach(input => {
-      input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !loginButton.disabled) {
-          loginButton.click();
-        }
-      });
-    });
-
-    // Add validation for registration form inputs
-    document.querySelectorAll('.register-form input').forEach(input => {
-      input.addEventListener('input', validateForm);
-    });
-
-    // Add confirmation password match validation
-    const regPasswordInput = document.getElementById('reg-password');
-    const confirmPasswordInput = document.getElementById('confirm-password');
-    
-    confirmPasswordInput.addEventListener('input', () => {
-      if (regPasswordInput.value !== confirmPasswordInput.value && confirmPasswordInput.value !== '') {
-        confirmPasswordInput.style.borderColor = '#ff3860';
-        
-        // Add password mismatch message if it doesn't exist
-        let mismatchMsg = confirmPasswordInput.parentElement.querySelector('.password-mismatch');
-        if (!mismatchMsg) {
-          mismatchMsg = document.createElement('div');
-          mismatchMsg.className = 'password-strength weak password-mismatch';
-          mismatchMsg.textContent = 'Passwords do not match';
-          confirmPasswordInput.parentElement.appendChild(mismatchMsg);
-        }
-      } else {
-        confirmPasswordInput.style.borderColor = confirmPasswordInput.value ? '#00F0FF' : '#2a3035';
-        
-        // Remove password mismatch message if it exists
-        const mismatchMsg = confirmPasswordInput.parentElement.querySelector('.password-mismatch');
-        if (mismatchMsg) {
-          confirmPasswordInput.parentElement.removeChild(mismatchMsg);
-        }
-      }
-      
-      validateForm();
-    });
-
-    // Add phone number validation
-    const phoneInput = document.getElementById('phone');
-    phoneInput.addEventListener('input', () => {
-      // Allow only numbers
-      phoneInput.value = phoneInput.value.replace(/[^0-9]/g, '');
-      
-      // Format validation
-      if (phoneInput.value.length > 0 && (phoneInput.value.length < 9 || phoneInput.value.length > 10)) {
-        phoneInput.style.borderColor = '#ff3860';
-      } else {
-        phoneInput.style.borderColor = phoneInput.value ? '#00F0FF' : '#2a3035';
-      }
-      
-      validateForm();
-    });
-
-    // Verification code input validation
-    const verificationInput = document.getElementById('verification-code');
-    verificationInput.addEventListener('input', () => {
-      // Allow only numbers
-      verificationInput.value = verificationInput.value.replace(/[^0-9]/g, '');
-      
-      // Limit to 6 digits
-      if (verificationInput.value.length > 6) {
-        verificationInput.value = verificationInput.value.slice(0, 6);
-      }
-      
-      validateForm();
-    });
-
-    // Add transition effects between registration steps
-    function transitionToNextStep(currentStepEl, nextStepEl) {
-      currentStepEl.style.opacity = '0';
-      currentStepEl.style.transform = 'translateX(-20px)';
-      
-      setTimeout(() => {
-        currentStepEl.style.display = 'none';
-        nextStepEl.style.display = 'block';
-        nextStepEl.style.opacity = '0';
-        nextStepEl.style.transform = 'translateX(20px)';
-        
-        setTimeout(() => {
-          nextStepEl.style.opacity = '1';
-          nextStepEl.style.transform = 'translateX(0)';
-        }, 50);
-      }, 300);
-    }
-
-    // Update the registration step function with transitions
+    // Registration next step
     regNextBtn.addEventListener('click', () => {
-      // Remove previous click event listener and add a new one
-      regNextBtn.removeEventListener('click', arguments.callee);
-      
       if (currentStep < 2) {
-        const currentStepEl = regSteps[currentStep];
         currentStep++;
-        const nextStepEl = regSteps[currentStep];
-        
-        // Update step indicators
-        stepIndicators.forEach((indicator, index) => {
-          indicator.classList.toggle('active', index <= currentStep);
-        });
-        
-        // Apply transition
-        transitionToNextStep(currentStepEl, nextStepEl);
-        
-        // Update button text on last step
-        regNextBtn.textContent = currentStep === 2 ? 'Submit' : 'Next';
-        
-        // Show/hide role-specific fields for step 1
-        if (currentStep === 1) {
-          const activeRole = document.querySelector('.register-form .role-option.active').dataset.role;
-          document.querySelectorAll('.landlord-field').forEach(field => {
-            field.classList.toggle('hidden', activeRole !== 'landlord');
-          });
-          document.querySelectorAll('.tenant-field').forEach(field => {
-            field.classList.toggle('hidden', activeRole !== 'tenant');
-          });
-        }
+        updateRegistrationStep();
         
         // For step 2, simulate sending verification code
         if (currentStep === 2) {
@@ -1120,57 +733,74 @@
           }, 2000);
         }, 1500);
       }
+    });
+
+    // Update registration step display
+    function updateRegistrationStep() {
+      regSteps.forEach((step, index) => {
+        step.style.display = index === currentStep ? 'block' : 'none';
+      });
       
-      // Re-add the click event listener
-      regNextBtn.addEventListener('click', arguments.callee);
-    });
+      stepIndicators.forEach((indicator, index) => {
+        indicator.classList.toggle('active', index <= currentStep);
+      });
+      
+      // Update button text on last step
+      regNextBtn.textContent = currentStep === 2 ? 'Create Account' : 'Next';
+      
+      // Show/hide role-specific fields
+      if (currentStep === 1) {
+        const activeRole = document.querySelector('.register-form .role-option.active').dataset.role;
+        document.querySelector('.landlord-field').style.display = activeRole === 'landlord' ? 'block' : 'none';
+        document.querySelector('.tenant-field').style.display = activeRole === 'tenant' ? 'block' : 'none';
+      }
+    }
 
-    // Apply styles to registration steps for transitions
-    regSteps.forEach(step => {
-      step.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-    });
-
-    // Add keypress event for registration
-    document.querySelectorAll('.register-form input').forEach(input => {
+    // Add keypress event for login
+    [emailInput, passwordInput].forEach(input => {
       input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !regNextBtn.disabled) {
-          regNextBtn.click();
+        if (e.key === 'Enter' && !loginButton.disabled) {
+          loginButton.click();
         }
       });
     });
 
-    // Add shake animation for invalid inputs
-    document.head.insertAdjacentHTML('beforeend', `
-      <style>
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          20%, 60% { transform: translateX(-5px); }
-          40%, 80% { transform: translateX(5px); }
-        }
-      </style>
-    `);
+    // Add validation for registration form inputs
+    document.querySelectorAll('.register-form input').forEach(input => {
+      input.addEventListener('input', validateForm);
+    });
 
-    // Initial form validation
-    validateForm();
+    // Add confirmation password match validation
+    const regPasswordInput = document.getElementById('reg-password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    
+    confirmPasswordInput.addEventListener('input', () => {
+      if (regPasswordInput.value !== confirmPasswordInput.value && confirmPasswordInput.value !== '') {
+        confirmPasswordInput.style.borderColor = '#ff3860';
+      } else {
+        confirmPasswordInput.style.borderColor = confirmPasswordInput.value ? '#4a6cf7' : '#e0e0e0';
+      }
+      validateForm();
+    });
 
-    // Add back to login functionality
+    // Signup toggle event
+    signupToggle.addEventListener('click', () => {
+      document.querySelector('[data-type="register"]').click();
+    });
+
+    // Back to login event
     backToLoginLink.addEventListener('click', () => {
       document.querySelector('[data-type="login"]').click();
     });
 
-    // Simulate a brief loading indicator for recaptcha
-    recaptchaContainer.forEach(container => {
-      setTimeout(() => {
-        container.innerHTML = '<i class="fas fa-check-circle" style="color: #00cc88; margin-right: 5px;"></i> reCAPTCHA verification completed';
-      }, 1500);
-    });
+    // Initial form validation
+    validateForm();
 
     // Demo credentials helper - add a small hint after a few seconds
     setTimeout(() => {
       const demoHint = document.createElement('div');
       demoHint.className = 'verification-info';
-      demoHint.innerHTML = '<i class="fas fa-info-circle"></i> Demo credentials: demo@smartrent.com / password123';
-      demoHint.style.marginTop = '10px';
+      demoHint.innerHTML = '<i class="fas fa-info-circle"></i> Demo: demo@smartrent.com / password123';
       demoHint.style.cursor = 'pointer';
       demoHint.onclick = () => {
         emailInput.value = 'demo@smartrent.com';
@@ -1180,9 +810,6 @@
       
       loginForm.appendChild(demoHint);
     }, 3000);
-
-    </script>
-
-
-    </body>
-    </html>
+  </script>
+</body>
+</html>
