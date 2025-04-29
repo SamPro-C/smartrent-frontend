@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartRent - Landlord Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  <style>
+    /* existing styles unchanged */
+    :root {
+      --primary: #3498db;
+      --primary-dark: #2980b9;
+      --secondary: #2ecc71;
+      --danger: #e74c3c;
+      --warning: #f39c12;
+      --info: #1abc9c;
+      --dark: #34495e;
+      --light: #ecf0f1;
+      --gray: #95a5a6;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    /* rest of styles unchanged */
+  </style>
+</head>
+<body>
+  <!-- Top Navbar -->
+  <nav class="navbar">
+    <div class="logo">
+      <i class="fas fa-building"></i>
+      <span>SmartRent</span>
+    </div>
+    
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Dashboard</a></li>
+      <li><a href="apartments.html">Apartments</a></li>
+      <li><a href="tenants.html">Tenants</a></li>
+      <li><a href="workers.html">Workers</a></li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    
+    <div class="nav-right">
+      <div class="notification">
+        <i class="fas fa-bell"></i>
+        <span class="notification-count">3</span>
+      </div>
+      
+      <div class="profile">
+        <img src="/api/placeholder/40/40" alt="Profile Picture" />
+        <span>John Doe</span>
+      </div>
+    </div>
+    
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <h1>Welcome back, John!</h1>
+      <p>Here's what's happening with your properties today.</p>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="card-title">TOTAL APARTMENTS</div>
+        <div class="card-value">12</div>
+        <div class="card-info">3 added this month</div>
+        <div class="card-icon blue">
+          <i class="fas fa-building"></i>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="card-title">TOTAL TENANTS</div>
+        <div class="card-value">48</div>
+        <div class="card-info">5 new this month</div>
+        <div class="card-icon green">
+          <i class="fas fa-users"></i>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="card-title">PAID RENT THIS MONTH</div>
+        <div class="card-value">$32,450</div>
+        <div class="card-info">75% of total expected</div>
+        <div class="card-icon teal">
+          <i class="fas fa-dollar-sign"></i>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="card-title">UNPAID RENT THIS MONTH</div>
+        <div class="card-value">Ksh 10,850</div>
+        <div class="card-info">25% remaining</div>
+        <div class="card-icon red">
+          <i class="fas fa-exclamation-circle"></i>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="card-title">TOTAL WORKERS</div>
+        <div class="card-value">8</div>
+        <div class="card-info">2 active today</div>
+        <div class="card-icon orange">
+          <i class="fas fa-hard-hat"></i>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Charts -->
+    <div class="charts-container">
+      <div class="chart-card">
+        <h3>Income vs Expenses</h3>
+        <div class="chart-container">
+          <canvas id="incomeChart"></canvas>
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <h3>Occupancy vs Vacancy</h3>
+        <div class="chart-container">
+          <canvas id="occupancyChart"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Activity and Notifications -->
+    <div class="activity-notifications">
+      <div class="activity-card">
+        <h3>
+          Recent Activity
+          <span class="view-all">View All</span>
+        </h3>
+        
+        <div class="activity-item">
+          <div class="activity-icon" style="background-color: var(--primary);">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <div class="activity-content">
+            <p><strong>New Tenant Added</strong></p>
+            <p>Sarah Johnson was added to Blue Heights, Unit 3B</p>
+            <span class="activity-time">Today, 10:24 AM</span>
+          </div>
+        </div>
+        
+        <div class="activity-item">
+          <div class="activity-icon" style="background-color: var(--secondary);">
+            <i class="fas fa-dollar-sign"></i>
+          </div>
+          <div class="activity-content">
+            <p><strong>Payment Received</strong></p>
+            <p>Michael Davis paid $1,200 for Green Valley, Unit 5A</p>
+            <span class="activity-time">Today, 9:15 AM</span>
+          </div>
+        </div>
+        
+        <div class="activity-item">
+          <div class="activity-icon" style="background-color: var(--info);">
+            <i class="fas fa-tools"></i>
+          </div>
+          <div class="activity-content">
+            <p><strong>Service Request Completed</strong></p>
+            <p>Plumbing issue in Parkview, Unit 2C was resolved</p>
+            <span class="activity-time">Yesterday, 4:30 PM</span>
+          </div>
+        </div>
+        
+        <div class="activity-item">
+          <div class="activity-icon" style="background-color: var(--warning);">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="activity-content">
+            <p><strong>Late Payment Notice</strong></p>
+            <p>Reminder sent to 3 tenants with overdue payments</p>
+            <span class="activity-time">Yesterday, 11:20 AM</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="notifications-card">
+        <h3>
+          Recent Notifications
+          <span class="view-all">View All</span>
+        </h3>
+        
+        <div class="notification-item">
+          <div class="notification-icon" style="background-color: var(--danger);">
+            <i class="fas fa-bell"></i>
+          </div>
+          <div class="notification-content">
+            <p><strong>Urgent Service Request</strong></p>
+            <p>Water leak reported in Sunset Towers, Unit 7D</p>
+            <span class="notification-time">30 minutes ago</span>
+          </div>
+        </div>
+        
+        <div class="notification-item">
+          <div class="notification-icon" style="background-color: var(--warning);">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <div class="notification-content">
+            <p><strong>Rent Due Soon</strong></p>
+            <p>5 tenants have rent due in the next 3 days</p>
+            <span class="notification-time">2 hours ago</span>
+          </div>
+        </div>
+        
+        <div class="notification-item">
+          <div class="notification-icon" style="background-color: var(--info);">
+            <i class="fas fa-user-clock"></i>
+          </div>
+          <div class="notification-content">
+            <p><strong>Worker Schedule Updated</strong></p>
+            <p>James Wilson updated his availability for next week</p>
+            <span class="notification-time">Yesterday, 6:15 PM</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="dashboard.js"></script>
+</body>
+</html>
+    
+    .activity-notifications {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .activity-card, .notifications-card {
+      background-color: var(--white);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+    
+    .activity-card h3, .notifications-card h3 {
+      margin-bottom: 1rem;
+      color: var(--dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .view-all {
+      font-size: 0.8rem;
+      color: var(--primary);
+      cursor: pointer;
+    }
+    
+    .activity-item, .notification-item {
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--light);
+      display: flex;
+      align-items: flex-start;
+    }
+    
+    .activity-item:last-child, .notification-item:last-child {
+      border-bottom: none;
+    }
+    
+    .activity-icon, .notification-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      margin-right: 0.8rem;
+      flex-shrink: 0;
+    }
+    
+    .activity-content, .notification-content {
+      flex-grow: 1;
+    }
+    
+    .activity-content p, .notification-content p {
+      margin-bottom: 0.3rem;
+      color: var(--dark);
+    }
+    
+    .activity-time, .notification-time {
+      font-size: 0.75rem;
+      color: var(--gray);
+    }
+    
+    @media (max-width: 992px) {
+      .charts-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .nav-links, .nav-right {
+        display: none;
+      }
+      
+      .nav-links.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background-color: var(--white);
+        box-shadow: var(--shadow);
+        padding: 1rem;
+      }
+      
+      .nav-links.active li {
+        margin: 0.8rem 0;
+      }
+      
+      .hamburger {
+        display: flex;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navbar -->
+  <nav class="navbar">
+    <div class="logo">
+      <i class="fas fa-building"></i>
+      <span>SmartRent</span>
+    </div>
+    
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Dashboard</a></li>
+      <li><a href="apartments.html">Apartments</a></li>
+      <li><a href="tenants.html">Tenants</a></li>
+      <li><a href="workers.html">Workers</a></li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    
+    
+    <div class="nav-right">
+      <div class="notification">
+        <i class="fas fa-bell"></i>
+        <span class="notification-count">3</span>
+      </div>
+      
+      <div class="profile">
+        <img src="/api/placeholder/40/40" alt="Profile Picture">
+        <span>John Doe</span>
+      </div>
+    </div>
+    
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <h1>Welcome back, John!</h1>
+      <p>Here's what's happening with your properties today.</p>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="card-title">TOTAL APARTMENTS</div>
+        <div class="card-value">12</div>
+        <div class="card-info">3 added this month</div>
+        <div class="card-icon blue">
+          <i class="fas fa-building"></i>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="card-title">TOTAL TENANTS</div>
+        <div class="card-value">48</div>
+        <div class="card-info">5 new this month</div>
+        <div class="card-icon green">
+          <i class="fas fa-users"></i>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="card-title">PAID RENT THIS MONTH</div>
+        <div class="card-value">$32,450</div>
+        <div class="card-info">75% of total expected</div>
+        <div class="card-icon teal">
+          <i class="fas fa-dollar-sign"></i>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="card-title">UNPAID RENT THIS MONTH</div>
+        <div class="card-value">Ksh 10,850</div>
+        <div class="card-info">25% remaining</div>
+        <div class="card-icon red">
+          <i class="fas fa-exclamation-circle"></i>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="card-title">TOTAL WORKERS</div>
+        <div class="card-value">8</div>
+        <div class="card-info">2 active today</div>
+        <div class="card-icon orange">
+          <i class="fas fa-hard-hat"></i>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Charts -->
+    <div class="charts-container">
+      <div class="chart-card">
+        <h3>Income vs Expenses</h3>
+        <div class="chart-container">
+          <canvas id="incomeChart"></canvas>
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <h3>Occupancy vs Vacancy</h3>
+        <div class="chart-container">
+          <canvas id="occupancyChart"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Activity and Notifications -->
+    <div class="activity-notifications">
+      <div class="activity-card">
+        <h3>
+          Recent Activity
+          <span class="view-all">View All</span>
+        </h3>
+        
+        <div class="activity-item">
+          <div class="activity-icon" style="background-color: var(--primary);">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <div class="activity-content">
+            <p><strong>New Tenant Added</strong></p>
+            <p>Sarah Johnson was added to Blue Heights, Unit 3B</p>
+            <span class="activity-time">Today, 10:24 AM</span>
+          </div>
+        </div>
+        
+        <div class="activity-item">
+          <div class="activity-icon" style="background-color: var(--secondary);">
+            <i class="fas fa-dollar-sign"></i>
+          </div>
+          <div class="activity-content">
+            <p><strong>Payment Received</strong></p>
+            <p>Michael Davis paid $1,200 for Green Valley, Unit 5A</p>
+            <span class="activity-time">Today, 9:15 AM</span>
+          </div>
+        </div>
+        
+        <div class="activity-item">
+          <div class="activity-icon" style="background-color: var(--info);">
+            <i class="fas fa-tools"></i>
+          </div>
+          <div class="activity-content">
+            <p><strong>Service Request Completed</strong></p>
+            <p>Plumbing issue in Parkview, Unit 2C was resolved</p>
+            <span class="activity-time">Yesterday, 4:30 PM</span>
+          </div>
+        </div>
+        
+        <div class="activity-item">
+          <div class="activity-icon" style="background-color: var(--warning);">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="activity-content">
+            <p><strong>Late Payment Notice</strong></p>
+            <p>Reminder sent to 3 tenants with overdue payments</p>
+            <span class="activity-time">Yesterday, 11:20 AM</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="notifications-card">
+        <h3>
+          Recent Notifications
+          <span class="view-all">View All</span>
+        </h3>
+        
+        <div class="notification-item">
+          <div class="notification-icon" style="background-color: var(--danger);">
+            <i class="fas fa-bell"></i>
+          </div>
+          <div class="notification-content">
+            <p><strong>Urgent Service Request</strong></p>
+            <p>Water leak reported in Sunset Towers, Unit 7D</p>
+            <span class="notification-time">30 minutes ago</span>
+          </div>
+        </div>
+        
+        <div class="notification-item">
+          <div class="notification-icon" style="background-color: var(--warning);">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <div class="notification-content">
+            <p><strong>Rent Due Soon</strong></p>
+            <p>5 tenants have rent due in the next 3 days</p>
+            <span class="notification-time">2 hours ago</span>
+          </div>
+        </div>
+        
+        <div class="notification-item">
+          <div class="notification-icon" style="background-color: var(--info);">
+            <i class="fas fa-user-clock"></i>
+          </div>
+          <div class="notification-content">
+            <p><strong>Worker Schedule Updated</strong></p>
+            <p>James Wilson updated his availability for next week</p>
+            <span class="notification-time">Yesterday, 6:15 PM</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Toggle mobile menu
+    document.querySelector('.hamburger').addEventListener('click', function() {
+      document.querySelector('.nav-links').classList.toggle('active');
+    });
+    
+    // Chart for Income vs Expenses
+    const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+    const incomeChart = new Chart(incomeCtx, {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [
+          {
+            label: 'Income',
+            data: [38000, 40000, 42500, 41000, 43500, 45000],
+            backgroundColor: 'rgba(46, 204, 113, 0.7)',
+            borderColor: 'rgba(46, 204, 113, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'Expenses',
+            data: [15000, 14000, 16500, 15800, 16200, 17000],
+            backgroundColor: 'rgba(231, 76, 60, 0.7)',
+            borderColor: 'rgba(231, 76, 60, 1)',
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return 'Ksh ' + value.toLocaleString();
+              }
+            }
+          }
+        }
+      }
+    });
+    
+    // Chart for Occupancy vs Vacancy
+    const occupancyCtx = document.getElementById('occupancyChart').getContext('2d');
+    const occupancyChart = new Chart(occupancyCtx, {
+      type: 'pie',
+      data: {
+        labels: ['Occupied', 'Vacant'],
+        datasets: [{
+          data: [85, 15],
+          backgroundColor: [
+            'rgba(52, 152, 219, 0.8)',
+            'rgba(149, 165, 166, 0.8)'
+          ],
+          borderColor: [
+            'rgba(52, 152, 219, 1)',
+            'rgba(149, 165, 166, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

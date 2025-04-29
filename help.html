@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartRent Help Center</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --text-color: #333;
+            --light-text: #fff;
+            --shadow: 0 2px 5px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: #f9f9f9;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+        
+        .header-content h1 {
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .header-content p {
+            font-size: 18px;
+            opacity: 0.8;
+        }
+        
+        .role-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .role-btn {
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 16px;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+        }
+        
+        .role-btn.active {
+            background-color: var(--accent-color);
+        }
+        
+        .role-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--light-color);
+            border-radius: 30px;
+            font-size: 16px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        
+        .help-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .sidebar {
+            flex: 1;
+            min-width: 250px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+        }
+        
+        .main-content {
+            flex: 3;
+            min-width: 300px;
+        }
+        
+        .category {
+            margin-bottom: 15px;
+        }
+        
+        .category-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .category-items {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .category.open .category-items {
+            max-height: 1000px;
+        }
+        
+        .category-item {
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+        
+        .category-item:hover {
+            background-color: #f0f0f0;
+            color: var(--secondary-color);
+        }
+        
+        .category-item.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .help-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .help-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+        }
+        
+        .help-section h3 {
+            color: var(--dark-color);
+            margin: 25px 0 15px;
+        }
+        
+        .qa-item {
+            margin-bottom: 20px;
+        }
+        
+        .question {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .answer {
+            padding-left: 15px;
+            border-left: 3px solid var(--light-color);
+        }
+        
+        .role-content {
+            display: none;
+        }
+        
+        .role-content.active {
+            display: block;
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--secondary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 100;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+        }
+        
+        .back-to-top:hover {
+            background-color: var(--accent-color);
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 50px;
+        }
+        
+        @media (max-width: 768px) {
+            .help-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                position: relative;
+                top: 0;
+                max-height: none;
+            }
+            
+            .role-btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <h1>SmartRent Help Center</h1>
+            <p>Find answers and guidance for using the SmartRent platform</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="role-selector">
+            <button class="role-btn active" data-role="general">Getting Started</button>
+            <button class="role-btn" data-role="landlord">For Landlords</button>
+            <button class="role-btn" data-role="tenant">For Tenants</button>
+            <button class="role-btn" data-role="worker">For Workers</button>
+            <button class="role-btn" data-role="support">Technical Support</button>
+        </div>
+        
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search for help topics...">
+            <div class="search-icon">🔍</div>
+        </div>
+        
+        <div class="help-content">
+            <aside class="sidebar">
+                <div class="category open">
+                    <div class="category-title">
+                        <span>Getting Started</span>
+                        <span class="toggle">▼</span>
+                    </div>
+                    <div class="category-items">
+                        <div class="category-item active" data-target="account-access">Account Access</div>
+                        <div class="category-item" data-target="registration">Registration</div>
+                    </div>
+                </div>
+                <div class="category">
+                    <div class="category-title">
+                        <span>For Landlords</span>
+                        <span class="toggle">▲</span>
+                    </div>
+                    <div class="category-items">
+                        <div class="category-item" data-target="property-management">Property Management</div>
+                        <div class="category-item" data-target="tenant-management">Tenant Management</div>
+                        <div class="category-item" data-target="worker-management">Worker Management</div>
+                        <div class="category-item" data-target="payment-tracking">Payment Tracking</div>
+                        <div class="category-item" data-target="service-requests-landlord">Service Requests</div>
+                        <div class="category-item" data-target="notifications">Notifications</div>
+                    </div>
+                </div>
+                <div class="category">
+                    <div class="category-title">
+                        <span>For Tenants</span>
+                        <span class="toggle">▲</span>
+                    </div>
+                    <div class="category-items">
+                        <div class="category-item" data-target="payments">Payments</div>
+                        <div class="category-item" data-target="service-requests-tenant">Service Requests</div>
+                        <div class="category-item" data-target="workers-info">Workers Information</div>
+                        <div class="category-item" data-target="shopping">Shopping</div>
+                    </div>
+                </div>
+                <div class="category">
+                    <div class="category-title">
+                        <span>For Workers</span>
+                        <span class="toggle">▲</span>
+                    </div>
+                    <div class="category-items">
+                        <div class="category-item" data-target="assignments">Assignments</div>
+                        <div class="category-item" data-target="service-requests-worker">Service Requests</div>
+                    </div>
+                </div>
+                <div class="category">
+                    <div class="category-title">
+                        <span>Technical Support</span>
+                        <span class="toggle">▲</span>
+                    </div>
+                    <div class="category-items">
+                        <div class="category-item" data-target="common-issues">Common Issues</div>
+                        <div class="category-item" data-target="contact-support">Contact Support</div>
+                    </div>
+                </div>
+                <div class="category">
+                    <div class="category-title">
+                        <span>Privacy & Security</span>
+                        <span class="toggle">▲</span>
+                    </div>
+                    <div class="category-items">
+                        <div class="category-item" data-target="privacy-security">Data Protection</div>
+                    </div>
+                </div>
+            </aside>
+            
+            <main class="main-content">
+                <!-- General content (visible by default) -->
+                <div class="role-content active" id="general-content">
+                    <section id="account-access" class="help-section">
+                        <h2>Account Access</h2>
+                        <div class="qa-item">
+                            <div class="question">How do I log in?</div>
+                            <div class="answer">Enter your registered email/phone number and password on the login screen.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">I forgot my password.</div>
+                            <div class="answer">Click the "Forgot Password" link on the login page to reset it.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">I can't access my account.</div>
+                            <div class="answer">Contact your landlord if you're a tenant or worker. Landlords should contact system support.</div>
+                        </div>
+                    </section>
+                    
+                    <section id="registration" class="help-section">
+                        <h2>Registration</h2>
+                        <div class="qa-item">
+                            <div class="question">How do I register?</div>
+                            <div class="answer">
+                                <ul>
+                                    <li>Landlords can register directly through the app.</li>
+                                    <li>Tenants and workers must be registered by their landlord before they can access the system.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">What information is needed for registration?</div>
+                            <div class="answer">Full name, contact information, ID, apartment details, and other role-specific information.</div>
+                        </div>
+                    </section>
+                </div>
+                
+                <!-- Landlord content -->
+                <div class="role-content" id="landlord-content">
+                    <section id="property-management" class="help-section">
+                        <h2>Property Management</h2>
+                        <div class="qa-item">
+                            <div class="question">How do I add a new apartment?</div>
+                            <div class="answer">Go to "Properties" → "Add New" and complete the required fields.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I manage apartment units?</div>
+                            <div class="answer">Select an apartment from your dashboard, then use the "Units" tab to add, edit, or remove units.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I mark rooms as vacant or occupied?</div>
+                            <div class="answer">From the apartment details page, select the unit and room, then use the status toggle.</div>
+                        </div>
+                    </section>
+                    
+                    <section id="tenant-management" class="help-section">
+                        <h2>Tenant Management</h2>
+                        <div class="qa-item">
+                            <div class="question">How do I register a new tenant?</div>
+                            <div class="answer">Go to "Tenants" → "Add New" and complete the registration form.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I edit tenant information?</div>
+                            <div class="answer">Search for the tenant using their ID, then click "Edit" on their profile.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I remove a tenant who has moved out?</div>
+                            <div class="answer">Search for the tenant, view their profile, and click "Remove Tenant."</div>
+                        </div>
+                    </section>
+                    
+                    <section id="worker-management" class="help-section">
+                        <h2>Worker Management</h2>
+                        <div class="qa-item">
+                            <div class="question">How do I add workers?</div>
+                            <div class="answer">Go to "Workers" → "Add New" and complete the worker registration form.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I assign workers to specific apartments?</div>
+                            <div class="answer">From the worker's profile, use the "Assignments" tab to select apartments and set schedules.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I view worker performance?</div>
+                            <div class="answer">Check the "Reports" section and filter by worker name.</div>
+                        </div>
+                    </section>
+                    
+                    <section id="payment-tracking" class="help-section">
+                        <h2>Payment Tracking</h2>
+                        <div class="qa-item">
+                            <div class="question">How do I view payment history?</div>
+                            <div class="answer">Go to "Payments" → "History" and use filters to view by date, apartment, or tenant.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I add a manual payment?</div>
+                            <div class="answer">Select "Payments" → "Add Manual Payment" and fill in all required details including M-Pesa code if applicable.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I generate payment reports?</div>
+                            <div class="answer">Go to "Reports" → "Payments" and use the filter options to customize your report.</div>
+                        </div>
+                    </section>
+                    
+                    <section id="service-requests-landlord" class="help-section">
+                        <h2>Service Requests</h2>
+                        <div class="qa-item">
+                            <div class="question">How do I view tenant service requests?</div>
+                            <div class="answer">Check the "Service Requests" section of your dashboard.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I assign workers to requests?</div>
+                            <div class="answer">Open the request and use the "Assign Worker" option.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I track request status?</div>
+                            <div class="answer">All requests show current status (New, In Progress, Completed).</div>
+                        </div>
+                    </section>
+                    
+                    <section id="notifications" class="help-section">
+                        <h2>Notifications</h2>
+                        <div class="qa-item">
+                            <div class="question">How do I send notifications to tenants?</div>
+                            <div class="answer">Go to "Notifications" → "New Notification" and select your target audience (all tenants, specific apartment, payment status).</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I view notification history?</div>
+                            <div class="answer">Check the "Notifications" → "History" section.</div>
+                        </div>
+                    </section>
+                </div>
+                
+                <!-- Tenant content -->
+                <div class="role-content" id="tenant-content">
+                    <section id="payments" class="help-section">
+                        <h2>Payments</h2>
+                        <div class="qa-item">
+                            <div class="question">How do I pay my rent?</div>
+                            <div class="answer">Click the "Pay Now" button on your dashboard and follow the prompts.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">What payment methods are available?</div>
+                            <div class="answer">M-Pesa, bank transfer, and other methods configured by your landlord.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I view my payment history?</div>
+                            <div class="answer">Check the "Payment History" section on your dashboard.</div>
+                        </div>
+                    </section>
+                    
+                    <section id="service-requests-tenant" class="help-section">
+                        <h2>Service Requests</h2>
+                        <div class="qa-item">
+                            <div class="question">How do I submit a service request?</div>
+                            <div class="answer">Click "Request Service" on your dashboard, complete the form, and attach photos/videos if needed.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I check the status of my request?</div>
+                            <div class="answer">View the "My Requests" section to see all requests and their current status.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">Can I cancel a service request?</div>
+                            <div class="answer">Yes, if the status is still "New," you can cancel it from the request details page.</div>
+                        </div>
+                    </section>
+                    
+                    <section id="workers-info" class="help-section">
+                        <h2>Workers Information</h2>
+                        <div class="qa-item">
+                            <div class="question">How do I view worker information?</div>
+                            <div class="answer">Check the "Workers" section on your dashboard to see workers assigned to your apartment.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I contact a worker?</div>
+                            <div class="answer">Worker contact details are available in the "Workers" section.</div>
+                        </div>
+                    </section>
+                    
+                    <section id="shopping" class="help-section">
+                        <h2>Shopping</h2>
+                        <div class="qa-item">
+                            <div class="question">How do I access the shopping section?</div>
+                            <div class="answer">Click the "Shop" button on your dashboard.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I place an order?</div>
+                            <div class="answer">Browse products, add items to your cart, and follow the checkout process.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I track my order?</div>
+                            <div class="answer">Go to "Orders" in the shopping section to view status.</div>
+                        </div>
+                    </section>
+                </div>
+                
+                <!-- Worker content -->
+                <div class="role-content" id="worker-content">
+                    <section id="assignments" class="help-section">
+                        <h2>Assignments</h2>
+                        <div class="qa-item">
+                            <div class="question">How do I view my assigned apartments?</div>
+                            <div class="answer">Check the "My Assignments" section on your dashboard.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I view my work schedule?</div>
+                            <div class="answer">Your schedule is displayed on your dashboard and can be viewed in calendar format.</div>
+                        </div>
+                    </section>
+                    
+                    <section id="service-requests-worker" class="help-section">
+                        <h2>Service Requests</h2>
+                        <div class="qa-item">
+                            <div class="question">How do I view service requests assigned to me?</div>
+                            <div class="answer">Check the "My Tasks" section on your dashboard.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I update the status of a request?</div>
+                            <div class="answer">Open the request details and use the "Update Status" option.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I communicate with tenants about requests?</div>
+                            <div class="answer">Use the messaging feature within each service request.</div>
+                        </div>
+                    </section>
+                </div>
+                
+                <!-- Technical Support content -->
+                <div class="role-content" id="support-content">
+                    <section id="common-issues" class="help-section">
+                        <h2>Common Issues</h2>
+                        <div class="qa-item">
+                            <div class="question">The app is running slowly.</div>
+                            <div class="answer">Try refreshing the page or clearing your browser cache.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">I can't upload photos/videos.</div>
+                            <div class="answer">Check that your files are under the size limit (10MB) and in a supported format.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">The page isn't loading correctly.</div>
+                            <div class="answer">Try using a different browser or device.</div>
+                        </div>
+                    </section>
+                    
+                    <section id="contact-support" class="help-section">
+                        <h2>Contact Support</h2>
+                        <div class="qa-item">
+                            <div class="question">For tenants and workers:</div>
+                            <div class="answer">Please contact your landlord for assistance.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">For landlords:</div>
+                            <div class="answer">Email support@smartrent.com or call our helpline at [support phone number].</div>
+                        </div>
+                    </section>
+                    
+                    <section id="privacy-security" class="help-section">
+                        <h2>Privacy & Security</h2>
+                        <div class="qa-item">
+                            <div class="question">How is my data protected?</div>
+                            <div class="answer">SmartRent uses encryption to protect all personal and payment information.</div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">Who can see my information?</div>
+                            <div class="answer">
+                                Access is strictly controlled based on user roles:
+                                <ul>
+                                    <li>Landlords can only see information related to their properties and users</li>
+                                    <li>Tenants can only see their own information</li>
+                                    <li>Workers can only see information needed for their assignments</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="qa-item">
+                            <div class="question">How do I report a security concern?</div>
+                            <div class="answer">Contact support immediately if you suspect any unauthorized access to your account.</div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <div class="back-to-top">↑</div>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 SmartRent. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Toggle category items
+        document.querySelectorAll('.category-title').forEach(title => {
+            title.addEventListener('click', () => {
+                const category = title.parentElement;
+                category.classList.toggle('open');
+                
+                const toggle = title.querySelector('.toggle');
+                toggle.textContent = category.classList.contains('open') ? '▼' : '▲';
+            });
+        });
+        
+        // Switch between active category items
+        document.querySelectorAll('.category-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // Remove active class from all items
+                document.querySelectorAll('.category-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+                
+                // Add active class to clicked item
+                item.classList.add('active');
+                
+                // Scroll to the target section
+                const targetId = item.getAttribute('data-target');
+                const targetSection = document.getElementById(targetId);
+                
+                if (targetSection) {
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 20,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Role selector functionality
+        document.querySelectorAll('.role-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all role buttons
+                document.querySelectorAll('.role-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                btn.classList.add('active');
+                
+                // Show relevant content based on role
+                const role = btn.getAttribute('data-role');
+                
+                document.querySelectorAll('.role-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                const activeContent = document.getElementById(`${role}-content`);
+                if (activeContent) {
+                    activeContent.classList.add('active');
+                } else if (role === 'support') {
+                    document.getElementById('support-content').classList.add('active');
+                } else {
+                    document.getElementById('general-content').classList.add('active');
+                }
+                
+                // Update sidebar to reflect the current role view
+                updateSidebar(role);
+            });
+        });
+        
+        // Function to update sidebar based on selected role
+        function updateSidebar(role) {
+            const allCategories = document.querySelectorAll('.category');
+            
+            // Close all categories first
+            allCategories.forEach(cat => {
+                cat.classList.remove('open');
+                cat.querySelector('.toggle').textContent = '▲';
+            });
+            
+            // Open relevant categories based on role
+            if (role === 'general') {
+                document.querySelector('.category:nth-child(1)').classList.add('open');
+                document.querySelector('.category:nth-child(1) .toggle').textContent = '▼';
+            } else if (role === 'landlord') {
+                document.querySelector('.category:nth-child(2)').classList.add('open');
+                document.querySelector('.category:nth-child(2) .toggle').textContent = '▼';
+            } else if (role === 'tenant') {
+                document.querySelector('.category:nth-child(3)').classList.add('open');
+                document.querySelector('.category:nth-child(3) .toggle').textContent = '▼';
+            } else if (role === 'worker') {
+                document.querySelector('.category:nth-child(4)').classList.add('open');
+                document.querySelector('.category:nth-child(4) .toggle').textContent = '▼';
+            } else if (role === 'support') {
+                document.querySelector('.category:nth-child(5)').classList.add('open');
+                document.querySelector('.category:nth-child(5) .toggle').textContent = '▼';
+                document.document.querySelector('.category:nth-child(6)').classList.add('open');
+                document.querySelector('.category:nth-child(6) .toggle').textContent = '▼';
+            }
+        }
+        
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+        
+        searchInput.addEventListener('input', () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (searchTerm.length > 2) {
+                searchContent(searchTerm);
+            } else {
+                // Reset search view
+                document.querySelectorAll('.qa-item').forEach(item => {
+                    item.style.display = 'block';
+                });
+                
+                document.querySelectorAll('.help-section').forEach(section => {
+                    section.style.display = 'block';
+                });
+            }
+        });
+        
+        function searchContent(term) {
+            // Hide all sections first
+            document.querySelectorAll('.help-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            let foundItems = false;
+            
+            // Show sections with matching content
+            document.querySelectorAll('.qa-item').forEach(item => {
+                const question = item.querySelector('.question').textContent.toLowerCase();
+                const answer = item.querySelector('.answer').textContent.toLowerCase();
+                
+                if (question.includes(term) || answer.includes(term)) {
+                    item.style.display = 'block';
+                    item.closest('.help-section').style.display = 'block';
+                    foundItems = true;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Show message if no results found
+            if (!foundItems) {
+                // Could add a "no results" message here
+                console.log("No search results found");
+            }
+        }
+        
+        // Back to top button functionality
+        const backToTopBtn = document.querySelector('.back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Initialize the page
+        function init() {
+            // Open the first category by default
+            document.querySelector('.category:first-child').classList.add('open');
+        }
+        
+        // Run initialization when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

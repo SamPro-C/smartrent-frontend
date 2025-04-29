@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartRent - Landlord Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  <style>
+    :root {
+      --primary: #3498db;
+      --primary-dark: #2980b9;
+      --secondary: #2ecc71;
+      --danger: #e74c3c;
+      --warning: #f39c12;
+      --info: #1abc9c;
+      --dark: #34495e;
+      --light: #ecf0f1;
+      --gray: #95a5a6;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7fa;
+    }
+    
+    .navbar {
+      background-color: var(--white);
+      box-shadow: var(--shadow);
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo i {
+      margin-right: 0.5rem;
+    }
+    
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+    
+    .nav-links li {
+      margin: 0 0.8rem;
+    }
+    
+    .nav-links a {
+      text-decoration: none;
+      color: var(--dark);
+      font-weight: 500;
+      padding: 0.5rem 0.8rem;
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+    
+    .nav-links a:hover, .nav-links a.active {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+    
+    .nav-right {
+      display: flex;
+      align-items: center;
+    }
+    
+    .notification {
+      position: relative;
+      margin-right: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .notification-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: var(--danger);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.7rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .profile {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+      object-fit: cover;
+    }
+    
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background-color: var(--dark);
+      margin: 2px 0;
+      transition: all 0.3s;
+    }.container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .reports-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .reports-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .filter-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .filter-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--dark);
+        }
+        
+        .filter-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--secondary);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+            background-color: white;
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border);
+        }
+        
+        .btn-outline:hover {
+            background-color: #f8fafc;
+        }
+        
+        .reports-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        
+        .report-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        
+        .report-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .report-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .report-card-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .report-card-body {
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #f8fafc;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--secondary);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .data-table th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--secondary);
+        }
+        
+        .data-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 16px;
+            gap: 8px;
+        }
+        
+        .page-item {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--secondary);
+        }
+        
+        .page-item.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .page-item:hover:not(.active) {
+            background-color: #f8fafc;
+        }
+        
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .summary-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 16px;
+        }
+        
+        .summary-title {
+            font-size: 14px;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+        
+        .summary-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .summary-change {
+            display: flex;
+            align-items: center;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        
+        .change-positive {
+            color: var(--success);
+        }
+        
+        .change-negative {
+            color: var(--danger);
+        }
+        
+        .icon {
+            margin-right: 4px;
+        }
+   
+    
+    @media (max-width: 992px) {
+      .charts-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .nav-links, .nav-right {
+        display: none;
+      }
+      
+      .nav-links.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background-color: var(--white);
+        box-shadow: var(--shadow);
+        padding: 1rem;
+      }
+      
+      .nav-links.active li {
+        margin: 0.8rem 0;
+      }
+      
+      .hamburger {
+        display: flex;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navbar -->
+  <nav class="navbar">
+    <div class="logo">
+      <i class="fas fa-building"></i>
+      <span>SmartRent</span>
+    </div>
+    
+    <ul class="nav-links">
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="apartments.html">Apartments</a></li>
+      <li><a href="tenants.html">Tenants</a></li>
+      <li><a href="workers.html">Workers</a></li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="reports.html" class="active">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    
+    <div class="nav-right">
+      <div class="notification">
+        <i class="fas fa-bell"></i>
+        <span class="notification-count">3</span>
+      </div>
+      
+      <div class="profile">
+        <img src="/api/placeholder/40/40" alt="Profile Picture">
+        <span>John Doe</span>
+      </div>
+    </div>
+    
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+ 
+  <div class="container">
+    <div class="reports-header">
+        <h1 class="reports-title">Reports</h1>
+        <div>
+            <button class="btn btn-primary">Download Report</button>
+        </div>
+    </div>
+    
+    <div class="filter-container">
+        <h2 class="filter-title">Filter Reports</h2>
+        <div class="filter-form">
+            <div class="form-group">
+                <label class="form-label">Date Range</label>
+                <select class="form-select">
+                    <option>This Month</option>
+                    <option>Last Month</option>
+                    <option>Last 3 Months</option>
+                    <option>Last 6 Months</option>
+                    <option>This Year</option>
+                    <option>Custom Range</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Start Date</label>
+                <input type="date" class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">End Date</label>
+                <input type="date" class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Apartment</label>
+                <select class="form-select">
+                    <option>All Apartments</option>
+                    <option>Sunrise Heights</option>
+                    <option>Westside Residences</option>
+                    <option>Park View Apartments</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Payment Status</label>
+                <select class="form-select">
+                    <option>All</option>
+                    <option>Paid</option>
+                    <option>Unpaid</option>
+                    <option>Partial</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Report Type</label>
+                <select class="form-select">
+                    <option>Income Report</option>
+                    <option>Expense Report</option>
+                    <option>Occupancy Report</option>
+                    <option>Tenant Report</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="filter-actions">
+            <button class="btn btn-primary">Apply Filters</button>
+            <button class="btn btn-outline">Reset</button>
+        </div>
+    </div>
+    
+    <div class="summary-cards">
+        <div class="summary-card">
+            <div class="summary-title">Total Revenue</div>
+            <div class="summary-value">$32,450</div>
+            <div class="summary-change change-positive">
+                <span class="icon">↑</span> 8.2% from last month
+            </div>
+        </div>
+        
+        <div class="summary-card">
+            <div class="summary-title">Total Expenses</div>
+            <div class="summary-value">$5,280</div>
+            <div class="summary-change change-negative">
+                <span class="icon">↑</span> 2.4% from last month
+            </div>
+        </div>
+        
+        <div class="summary-card">
+            <div class="summary-title">Occupancy Rate</div>
+            <div class="summary-value">87%</div>
+            <div class="summary-change change-positive">
+                <span class="icon">↑</span> 3% from last month
+            </div>
+        </div>
+        
+        <div class="summary-card">
+            <div class="summary-title">Payment Rate</div>
+            <div class="summary-value">92%</div>
+            <div class="summary-change change-positive">
+                <span class="icon">↑</span> 5% from last month
+            </div>
+        </div>
+    </div>
+    
+    <div class="reports-content">
+        <div class="report-card">
+            <div class="report-card-header">
+                <h3 class="report-card-title">Monthly Revenue</h3>
+                <div class="report-card-actions">
+                    <button class="btn btn-outline">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="report-card-body">
+                <div class="chart-placeholder">
+                    Monthly Revenue Bar Chart
+                </div>
+            </div>
+        </div>
+        
+        <div class="report-card">
+            <div class="report-card-header">
+                <h3 class="report-card-title">Payment Distribution</h3>
+                <div class="report-card-actions">
+                    <button class="btn btn-outline">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="report-card-body">
+                <div class="chart-placeholder">
+                    Payment Distribution Pie Chart
+                </div>
+            </div>
+        </div>
+        
+        <div class="report-card">
+            <div class="report-card-header">
+                <h3 class="report-card-title">Occupancy Trends</h3>
+                <div class="report-card-actions">
+                    <button class="btn btn-outline">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="report-card-body">
+                <div class="chart-placeholder">
+                    Occupancy Trends Line Chart
+                </div>
+            </div>
+        </div>
+        
+        <div class="report-card">
+            <div class="report-card-header">
+                <h3 class="report-card-title">Expense Categories</h3>
+                <div class="report-card-actions">
+                    <button class="btn btn-outline">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="report-card-body">
+                <div class="chart-placeholder">
+                    Expense Categories Donut Chart
+                </div>
+            </div>
+        </div>
+        
+        <div class="report-card full-width">
+            <div class="report-card-header">
+                <h3 class="report-card-title">Rent Payment Status</h3>
+                <div class="report-card-actions">
+                    <button class="btn btn-outline">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                            <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="report-card-body" style="height: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tenant Name</th>
+                            <th>Apartment</th>
+                            <th>Unit/Room</th>
+                            <th>Due Amount</th>
+                            <th>Paid Amount</th>
+                            <th>Status</th>
+                            <th>Payment Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>John Smith</td>
+                            <td>Sunrise Heights</td>
+                            <td>A-101</td>
+                            <td>$850</td>
+                            <td>$850</td>
+                            <td><span class="badge badge-success">Paid</span></td>
+                            <td>Apr 3, 2025</td>
+                        </tr>
+                        <tr>
+                            <td>Sarah Johnson</td>
+                            <td>Westside Residences</td>
+                            <td>B-205</td>
+                            <td>$950</td>
+                            <td>$950</td>
+                            <td><span class="badge badge-success">Paid</span></td>
+                            <td>Apr 5, 2025</td>
+                        </tr>
+                        <tr>
+                            <td>Michael Brown</td>
+                            <td>Park View Apartments</td>
+                            <td>C-302</td>
+                            <td>$1,200</td>
+                            <td>$0</td>
+                            <td><span class="badge badge-danger">Unpaid</span></td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td>Emily Wilson</td>
+                            <td>Sunrise Heights</td>
+                            <td>A-203</td>
+                            <td>$850</td>
+                            <td>$850</td>
+                            <td><span class="badge badge-success">Paid</span></td>
+                            <td>Apr 2, 2025</td>
+                        </tr>
+                        <tr>
+                            <td>David Lee</td>
+                            <td>Westside Residences</td>
+                            <td>B-104</td>
+                            <td>$950</td>
+                            <td>$0</td>
+                            <td><span class="badge badge-danger">Unpaid</span></td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="pagination">
+                    <div class="page-item">«</div>
+                    <div class="page-item active">1</div>
+                    <div class="page-item">2</div>
+                    <div class="page-item">3</div>
+                    <div class="page-item">»</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+  <script>
+    // Toggle mobile menu
+    document.querySelector('.hamburger').addEventListener('click', function() {
+      document.querySelector('.nav-links').classList.toggle('active');
+    });
+    
+  </script>
+</body>
+</html>

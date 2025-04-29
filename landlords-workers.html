@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartRent - Landlord Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  <style>
+    :root {
+      --primary: #3498db;
+      --primary-dark: #2980b9;
+      --secondary: #2ecc71;
+      --danger: #e74c3c;
+      --warning: #f39c12;
+      --info: #1abc9c;
+      --dark: #34495e;
+      --light: #ecf0f1;
+      --gray: #95a5a6;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7fa;
+      padding-top: 70px;
+    }
+    
+    .navbar {
+      background-color: var(--white);
+      box-shadow: var(--shadow);
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo i {
+      margin-right: 0.5rem;
+    }
+    
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+    
+    .nav-links li {
+      margin: 0 0.8rem;
+    }
+    
+    .nav-links a {
+      text-decoration: none;
+      color: var(--dark);
+      font-weight: 500;
+      padding: 0.5rem 0.8rem;
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+    
+    .nav-links a:hover, .nav-links a.active {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+    
+    .nav-right {
+      display: flex;
+      align-items: center;
+    }
+    
+    .notification {
+      position: relative;
+      margin-right: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .notification-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: var(--danger);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.7rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .profile {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+      object-fit: cover;
+    }
+    
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background-color: var(--dark);
+      margin: 2px 0;
+      transition: all 0.3s;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+    
+    .bg-white {
+      background-color: var(--white);
+    }
+    
+    .shadow {
+      box-shadow: var(--shadow);
+    }
+    
+    .rounded-md {
+      border-radius: 0.375rem;
+    }
+    
+    .mb-6 {
+      margin-bottom: 1.5rem;
+    }
+    
+    .mb-4 {
+      margin-bottom: 1rem;
+    }
+    
+    .mb-1 {
+      margin-bottom: 0.25rem;
+    }
+    
+    .p-4 {
+      padding: 1rem;
+    }
+    
+    .px-6 {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    
+    .py-3 {
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+    
+    .px-4 {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+    
+    .py-2 {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+    }
+    
+    .px-3 {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+    
+    .py-4 {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+    
+    .flex {
+      display: flex;
+    }
+    
+    .items-center {
+      align-items: center;
+    }
+    
+    .justify-between {
+      justify-content: space-between;
+    }
+    
+    .flex-col {
+      flex-direction: column;
+    }
+    
+    .flex-1 {
+      flex: 1;
+    }
+    
+    .flex-wrap {
+      flex-wrap: wrap;
+    }
+    
+    .gap-4 {
+      gap: 1rem;
+    }
+    
+    .gap-2 {
+      gap: 0.5rem;
+    }
+    
+    .gap-6 {
+      gap: 1.5rem;
+    }
+    
+    .text-2xl {
+      font-size: 1.5rem;
+    }
+    
+    .text-lg {
+      font-size: 1.125rem;
+    }
+    
+    .text-sm {
+      font-size: 0.875rem;
+    }
+    
+    .text-xs {
+      font-size: 0.75rem;
+    }
+    
+    .font-semibold {
+      font-weight: 600;
+    }
+    
+    .font-medium {
+      font-weight: 500;
+    }
+    
+    .text-gray-800 {
+      color: #1f2937;
+    }
+    
+    .text-white {
+      color: var(--white);
+    }
+    
+    .text-gray-500 {
+      color: #6b7280;
+    }
+    
+    .text-gray-700 {
+      color: #374151;
+    }
+    
+    .text-gray-600 {
+      color: #4b5563;
+    }
+    
+    .text-gray-900 {
+      color: #111827;
+    }
+    
+    .text-blue-600 {
+      color: #2563eb;
+    }
+    
+    .text-green-600 {
+      color: #059669;
+    }
+    
+    .text-red-600 {
+      color: #dc2626;
+    }
+    
+    .text-yellow-400 {
+      color: #fbbf24;
+    }
+    
+    .bg-blue-600 {
+      background-color: #2563eb;
+    }
+    
+    .bg-gray-50 {
+      background-color: #f9fafb;
+    }
+    
+    .bg-gray-200 {
+      background-color: #e5e7eb;
+    }
+    
+    .bg-green-100 {
+      background-color: #d1fae5;
+    }
+    
+    .text-green-800 {
+      color: #065f46;
+    }
+    
+    .bg-red-100 {
+      background-color: #fee2e2;
+    }
+    
+    .text-red-800 {
+      color: #991b1b;
+    }
+    
+    .border {
+      border: 1px solid #e5e7eb;
+    }
+    
+    .border-t {
+      border-top: 1px solid #e5e7eb;
+    }
+    
+    .border-gray-200 {
+      border-color: #e5e7eb;
+    }
+    
+    .rounded-full {
+      border-radius: 9999px;
+    }
+    
+    .overflow-hidden {
+      overflow: hidden;
+    }
+    
+    .overflow-x-auto {
+      overflow-x: auto;
+    }
+    
+    .overflow-y-auto {
+      overflow-y: auto;
+    }
+    
+    .whitespace-nowrap {
+      white-space: nowrap;
+    }
+    
+    .hover\:bg-gray-50:hover {
+      background-color: #f9fafb;
+    }
+    
+    .hover\:bg-gray-300:hover {
+      background-color: #d1d5db;
+    }
+    
+    .hover\:text-blue-900:hover {
+      color: #1e3a8a;
+    }
+    
+    .hover\:text-green-900:hover {
+      color: #064e3b;
+    }
+    
+    .hover\:text-red-900:hover {
+      color: #7f1d1d;
+    }
+    
+    .focus\:outline-none:focus {
+      outline: none;
+    }
+    
+    .focus\:ring-2:focus {
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+    }
+    
+    .focus\:ring-blue-500:focus {
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+    }
+    
+    .grid {
+      display: grid;
+    }
+    
+    .grid-cols-1 {
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+    
+    .w-full {
+      width: 100%;
+    }
+    
+    .h-10 {
+      height: 2.5rem;
+    }
+    
+    .w-10 {
+      width: 2.5rem;
+    }
+    
+    .flex-shrink-0 {
+      flex-shrink: 0;
+    }
+    
+    .ml-4 {
+      margin-left: 1rem;
+    }
+    
+    .ml-1 {
+      margin-left: 0.25rem;
+    }
+    
+    .mr-3 {
+      margin-right: 0.75rem;
+    }
+    
+    .mr-2 {
+      margin-right: 0.5rem;
+    }
+    
+    .mr-1 {
+      margin-right: 0.25rem;
+    }
+    
+    .space-x-2 > * + * {
+      margin-left: 0.5rem;
+    }
+    
+    /* Charts container for responsiveness */
+    .charts-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    
+    /* Stats grid for responsiveness */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+      .charts-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .grid-cols-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .nav-links, .nav-right {
+        display: none;
+      }
+      
+      .nav-links.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background-color: var(--white);
+        box-shadow: var(--shadow);
+        padding: 1rem;
+      }
+      
+      .nav-links.active li {
+        margin: 0.8rem 0;
+      }
+      
+      .hamburger {
+        display: flex;
+      }
+      
+      .md\:flex-row {
+        flex-direction: column;
+      }
+      
+      .md\:grid-cols-2 {
+        grid-template-columns: 1fr;
+      }
+      
+      .md\:flex-nowrap {
+        flex-wrap: wrap;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .md\:flex-row {
+        flex-direction: row;
+      }
+      
+      .md\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      
+      .md\:flex-nowrap {
+        flex-wrap: nowrap;
+      }
+      
+      .md\:hidden {
+        display: none;
+      }
+    }
+    
+    @media (min-width: 992px) {
+      .lg\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    
+    .cursor-pointer {
+      cursor: pointer;
+    }
+    
+    .uppercase {
+      text-transform: uppercase;
+    }
+    
+    .tracking-wider {
+      letter-spacing: 0.05em;
+    }
+    
+    .text-left {
+      text-align: left;
+    }
+    
+    .text-right {
+      text-align: right;
+    }
+    
+    .leading-5 {
+      line-height: 1.25rem;
+    }
+    
+    .inline-flex {
+      display: inline-flex;
+    }
+    
+    .relative {
+      position: relative;
+    }
+    
+    .absolute {
+      position: absolute;
+    }
+    
+    .left-3 {
+      left: 0.75rem;
+    }
+    
+    .top-2\.5 {
+      top: 0.625rem;
+    }
+    
+    .divide-y > * + * {
+      border-top-width: 1px;
+      border-top-style: solid;
+    }
+    
+    .divide-gray-200 > * + * {
+      border-color: #e5e7eb;
+    }
+    
+    .min-w-full {
+      min-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navbar -->
+  <nav class="navbar">
+    <div class="logo">
+      <i class="fas fa-building"></i>
+      <span>SmartRent</span>
+    </div>
+    
+    <ul class="nav-links">
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="apartments.html">Apartments</a></li>
+      <li><a href="tenants.html">Tenants</a></li>
+      <li><a href="workers.html" class="active">Workers</a></li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    
+    <div class="nav-right">
+      <div class="notification">
+        <i class="fas fa-bell"></i>
+        <span class="notification-count">3</span>
+      </div>
+      
+      <div class="profile">
+        <img src="/api/placeholder/40/40" alt="Profile Picture">
+        <span>John Doe</span>
+      </div>
+    </div>
+    
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Page Header -->
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-semibold text-gray-800">Worker Management</h1>
+      <button id="addWorkerBtn" class="bg-blue-600 text-white px-4 py-2 rounded-md flex items-center">
+        <i class="fas fa-plus mr-2"></i> Add New Worker
+      </button>
+    </div>
+    
+    <!-- Search and Filter Section -->
+    <div class="bg-white p-4 rounded-md shadow mb-6">
+      <div class="flex flex-col md:flex-row gap-4">
+        <div class="flex-1">
+          <div class="relative">
+            <input type="text" id="searchWorker" placeholder="Search by name, ID or phone..." class="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div class="absolute left-3 top-2.5 text-gray-400">
+              <i class="fas fa-search"></i>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-2 flex-wrap md:flex-nowrap">
+          <select class="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">All Properties</option>
+            <option value="property1">Sunset Apartments</option>
+            <option value="property2">Green Valley Heights</option>
+            <option value="property3">Urban Residences</option>
+          </select>
+          <select class="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">All Roles</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="security">Security</option>
+            <option value="cleaning">Cleaning</option>
+            <option value="gardening">Gardening</option>
+          </select>
+          <select class="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+          <button class="bg-gray-200 px-3 py-2 rounded-md hover:bg-gray-300">
+            <i class="fas fa-filter mr-1"></i> Reset
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Workers Table -->
+    <div class="bg-white rounded-md shadow overflow-hidden mb-6">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <div class="flex items-center cursor-pointer">
+                  Worker
+                  <i class="fas fa-sort ml-1"></i>
+                </div>
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <div class="flex items-center cursor-pointer">
+                  Role
+                  <i class="fas fa-sort ml-1"></i>
+                </div>
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <div class="flex items-center cursor-pointer">
+                  Property
+                  <i class="fas fa-sort ml-1"></i>
+                </div>
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <div class="flex items-center cursor-pointer">
+                  Performance
+                  <i class="fas fa-sort ml-1"></i>
+                </div>
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <div class="flex items-center cursor-pointer">
+                  Status
+                  <i class="fas fa-sort ml-1"></i>
+                </div>
+              </th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <!-- Worker Row 1 -->
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 h-10 w-10">
+                    <img class="h-10 w-10 rounded-full" src="/api/placeholder/40/40" alt="Worker photo">
+                  </div>
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-gray-900">John Doe</div>
+                    <div class="text-sm text-gray-500">ID: W-0012</div>
+                    <div class="text-sm text-gray-500">+1 (123) 456-7890</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">Maintenance Manager</div>
+                <div class="text-sm text-gray-500">Electrical, Plumbing</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">Sunset Apartments</div>
+                <div class="text-sm text-gray-500">Green Valley Heights</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                  </div>
+                  <span class="ml-1 text-sm text-gray-600">4.5</span>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  Active
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button class="text-blue-600 hover:text-blue-900 mr-3" onclick="openWorkerProfile('W-0012')">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button class="text-green-600 hover:text-green-900 mr-3">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="text-red-600 hover:text-red-900">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+            
+            <!-- Worker Row 2 -->
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 h-10 w-10">
+                    <img class="h-10 w-10 rounded-full" src="/api/placeholder/40/40" alt="Worker photo">
+                  </div>
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-gray-900">Jane Smith</div>
+                    <div class="text-sm text-gray-500">ID: W-0023</div>
+                    <div class="text-sm text-gray-500">+1 (234) 567-8901</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">Security Officer</div>
+                <div class="text-sm text-gray-500">Night Shift</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">Urban Residences</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                  </div>
+                  <span class="ml-1 text-sm text-gray-600">4.0</span>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  Active
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button class="text-blue-600 hover:text-blue-900 mr-3" onclick="openWorkerProfile('W-0023')">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button class="text-green-600 hover:text-green-900 mr-3">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="text-red-600 hover:text-red-900">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+            
+            <!-- Worker Row 3 -->
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 h-10 w-10">
+                    <img class="h-10 w-10 rounded-full" src="/api/placeholder/40/40" alt="Worker photo">
+                  </div>
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-gray-900">Robert Johnson</div>
+                    <div class="text-sm text-gray-500">ID: W-0034</div>
+                    <div class="text-sm text-gray-500">+1 (345) 678-9012</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">Gardener</div>
+                <div class="text-sm text-gray-500">Landscaping</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">Green Valley Heights</div>
+                <div class="text-sm text-gray-500">Sunset Apartments</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="far fa-star"></i>
+                    <i class="far fa-star"></i>
+                  </div>
+                  <span class="ml-1 text-sm text-gray-600">3.0</span>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  Active
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button class="text-blue-600 hover:text-blue-900 mr-3" onclick="openWorkerProfile('W-0034')">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button class="text-green-600 hover:text-green-900 mr-3">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="text-red-600 hover:text-red-900">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+            
+            <!-- Worker Row 4 -->
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 h-10 w-10">
+                    <img class="h-10 w-10 rounded-full" src="/api/placeholder/40/40" alt="Worker photo">
+                  </div>
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-gray-900">Maria Garcia</div>
+                    <div class="text-sm text-gray-500">ID: W-0045</div>
+                    <div class="text-sm text-gray-500">+1 (456) 789-0123</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6<td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">Cleaning Supervisor</div>
+                <div class="text-sm text-gray-500">General Cleaning</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">Urban Residences</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                  </div>
+                  <span class="ml-1 text-sm text-gray-600">5.0</span>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                  Inactive
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button class="text-blue-600 hover:text-blue-900 mr-3" onclick="openWorkerProfile('W-0045')">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button class="text-green-600 hover:text-green-900 mr-3">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="text-red-600 hover:text-red-900">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+            
+            <!-- Worker Row 5 -->
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="flex-shrink-0 h-10 w-10">
+                    <img class="h-10 w-10 rounded-full" src="/api/placeholder/40/40" alt="Worker photo">
+                  </div>
+                  <div class="ml-4">
+                    <div class="text-sm font-medium text-gray-900">David Wilson</div>
+                    <div class="text-sm text-gray-500">ID: W-0056</div>
+                    <div class="text-sm text-gray-500">+1 (567) 890-1234</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">Maintenance Technician</div>
+                <div class="text-sm text-gray-500">HVAC, Electrical</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-900">Sunset Apartments</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div class="text-yellow-400">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                    <i class="far fa-star"></i>
+                  </div>
+                  <span class="ml-1 text-sm text-gray-600">3.5</span>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  Active
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button class="text-blue-600 hover:text-blue-900 mr-3" onclick="openWorkerProfile('W-0056')">
+                  <i class="fas fa-eye"></i>
+                </button>
+                <button class="text-green-600 hover:text-green-900 mr-3">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="text-red-600 hover:text-red-900">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Pagination Controls -->
+      <div class="bg-white px-4 py-3 border-t border-gray-200 flex items-center justify-between">
+        <div class="flex-1 flex justify-between sm:hidden">
+          <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+            Previous
+          </a>
+          <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+            Next
+          </a>
+        </div>
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+          <div>
+            <p class="text-sm text-gray-700">
+              Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">25</span> results
+            </p>
+          </div>
+          <div>
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+              <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                <span class="sr-only">Previous</span>
+                <i class="fas fa-chevron-left"></i>
+              </a>
+              <a href="#" aria-current="page" class="z-10 bg-blue-600 border-blue-600 text-white relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                1
+              </a>
+              <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                2
+              </a>
+              <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                3
+              </a>
+              <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                ...
+              </span>
+              <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                5
+              </a>
+              <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                <span class="sr-only">Next</span>
+                <i class="fas fa-chevron-right"></i>
+              </a>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Worker Stats Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <!-- Performance Stats -->
+      <div class="bg-white rounded-md shadow p-4">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Worker Performance Stats</h2>
+        <canvas id="performanceChart"></canvas>
+      </div>
+      
+      <!-- Worker Distribution -->
+      <div class="bg-white rounded-md shadow p-4">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Worker Distribution by Role</h2>
+        <canvas id="distributionChart"></canvas>
+      </div>
+    </div>
+    
+    <!-- Recent Work Orders -->
+    <div class="bg-white rounded-md shadow p-4 mb-6">
+      <h2 class="text-lg font-semibold text-gray-800 mb-4">Recent Work Orders</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned To</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">WO-2023-0145</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Sunset Apartments, Unit 302</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">John Doe</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Plumbing</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Apr 15, 2025</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">WO-2023-0146</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Green Valley Heights, Unit 105</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">David Wilson</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">HVAC</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">In Progress</span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Apr 17, 2025</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">WO-2023-0147</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Urban Residences, Unit 201</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">John Doe</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Electrical</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Scheduled</span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Apr 19, 2025</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Worker Modal -->
+  <div id="addWorkerModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold text-gray-800">Add New Worker</h3>
+        <button id="closeAddWorkerModal" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <form id="addWorkerForm">
+        <div class="mb-4">
+          <label for="workerName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+          <input type="text" id="workerName" name="workerName" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <div class="mb-4">
+          <label for="workerRole" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+          <select id="workerRole" name="workerRole" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            <option value="">Select Role</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="security">Security</option>
+            <option value="cleaning">Cleaning</option>
+            <option value="gardening">Gardening</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label for="workerSpecialization" class="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
+          <input type="text" id="workerSpecialization" name="workerSpecialization" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="E.g. Electrical, Plumbing, etc.">
+        </div>
+        <div class="mb-4">
+          <label for="workerPhone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+          <input type="tel" id="workerPhone" name="workerPhone" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <div class="mb-4">
+          <label for="workerEmail" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <input type="email" id="workerEmail" name="workerEmail" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+        </div>
+        <div class="mb-4">
+          <label for="workerProperty" class="block text-sm font-medium text-gray-700 mb-1">Assigned Property</label>
+          <select id="workerProperty" name="workerProperty" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required multiple>
+            <option value="property1">Sunset Apartments</option>
+            <option value="property2">Green Valley Heights</option>
+            <option value="property3">Urban Residences</option>
+          </select>
+          <p class="text-xs text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple properties</p>
+        </div>
+        <div class="flex justify-end">
+          <button type="button" id="cancelAddWorker" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-md mr-2 hover:bg-gray-300">Cancel</button>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Add Worker</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Worker Profile Modal -->
+  <div id="workerProfileModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-4xl max-h-screen overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-semibold text-gray-800">Worker Profile</h3>
+        <button id="closeWorkerProfileModal" class="text-gray-500 hover:text-gray-700">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div id="workerProfileContent" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Content will be loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sample data for charts
+    document.addEventListener('DOMContentLoaded', function() {
+      // Worker Performance Chart
+      const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+      const performanceChart = new Chart(performanceCtx, {
+        type: 'bar',
+        data: {
+          labels: ['John Doe', 'Jane Smith', 'Robert Johnson', 'Maria Garcia', 'David Wilson'],
+          datasets: [{
+            label: 'Performance Rating',
+            data: [4.5, 4.0, 3.0, 5.0, 3.5],
+            backgroundColor: [
+              'rgba(52, 152, 219, 0.6)',
+              'rgba(52, 152, 219, 0.6)',
+              'rgba(52, 152, 219, 0.6)',
+              'rgba(52, 152, 219, 0.6)',
+              'rgba(52, 152, 219, 0.6)'
+            ],
+            borderColor: [
+              'rgba(41, 128, 185, 1)',
+              'rgba(41, 128, 185, 1)',
+              'rgba(41, 128, 185, 1)',
+              'rgba(41, 128, 185, 1)',
+              'rgba(41, 128, 185, 1)'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 5
+            }
+          }
+        }
+      });
+      
+      // Worker Distribution Chart
+      const distributionCtx = document.getElementById('distributionChart').getContext('2d');
+      const distributionChart = new Chart(distributionCtx, {
+        type: 'pie',
+        data: {
+          labels: ['Maintenance', 'Security', 'Cleaning', 'Gardening'],
+          datasets: [{
+            label: 'Worker Distribution',
+            data: [8, 5, 6, 3],
+            backgroundColor: [
+              'rgba(52, 152, 219, 0.6)',
+              'rgba(46, 204, 113, 0.6)',
+              'rgba(155, 89, 182, 0.6)',
+              'rgba(241, 196, 15, 0.6)'
+            ],
+            borderColor: [
+              'rgba(41, 128, 185, 1)',
+              'rgba(39, 174, 96, 1)',
+              'rgba(142, 68, 173, 1)',
+              'rgba(243, 156, 18, 1)'
+            ],
+            borderWidth: 1
+          }]
+        }
+      });
+      
+      // Toggle mobile menu
+      const hamburger = document.querySelector('.hamburger');
+      const navLinks = document.querySelector('.nav-links');
+      
+      hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+      
+      // Modal functionality
+      const addWorkerBtn = document.getElementById('addWorkerBtn');
+      const addWorkerModal = document.getElementById('addWorkerModal');
+      const closeAddWorkerModal = document.getElementById('closeAddWorkerModal');
+      const cancelAddWorker = document.getElementById('cancelAddWorker');
+      
+      addWorkerBtn.addEventListener('click', () => {
+        addWorkerModal.classList.remove('hidden');
+      });
+      
+      closeAddWorkerModal.addEventListener('click', () => {
+        addWorkerModal.classList.add('hidden');
+      });
+      
+      cancelAddWorker.addEventListener('click', () => {
+        addWorkerModal.classList.add('hidden');
+      });
+      
+      // Worker Profile Modal
+      const workerProfileModal = document.getElementById('workerProfileModal');
+      const closeWorkerProfileModal = document.getElementById('closeWorkerProfileModal');
+      
+      closeWorkerProfileModal.addEventListener('click', () => {
+        workerProfileModal.classList.add('hidden');
+      });
+      
+      // Add form submission event
+      const addWorkerForm = document.getElementById('addWorkerForm');
+      addWorkerForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Worker added successfully!');
+        addWorkerModal.classList.add('hidden');
+      });
+    });
+    
+    // Function to open worker profile
+    function openWorkerProfile(workerId) {
+      const workerProfileModal = document.getElementById('workerProfileModal');
+      const workerProfileContent = document.getElementById('workerProfileContent');
+      
+      // Sample data - in a real app this would be fetched from a server
+      const workerData = {
+        'W-0012': {
+          name: 'John Doe',
+          role: 'Maintenance Manager',
+          specialization: 'Electrical, Plumbing',
+          phone: '+1 (123) 456-7890',
+          email: 'john.doe@example.com',
+          properties: ['Sunset Apartments', 'Green Valley Heights'],
+          rating: 4.5,
+          joinDate: 'Jan 15, 2022',
+          completedJobs: 156,
+          pendingJobs: 3
+        },
+        'W-0023': {
+          name: 'Jane Smith',
+          role: 'Security Officer',
+          specialization: 'Night Shift',
+          phone: '+1 (234) 567-8901',
+          email: 'jane.smith@example.com',
+          properties: ['Urban Residences'],
+          rating: 4.0,
+          joinDate: 'Mar 22, 2022',
+          completedJobs: 98,
+          pendingJobs: 1
+        },
+        'W-0034': {
+          name: 'Robert Johnson',
+          role: 'Gardener',
+          specialization: 'Landscaping',
+          phone: '+1 (345) 678-9012',
+          email: 'robert.johnson@example.com',
+          properties: ['Green Valley Heights', 'Sunset Apartments'],
+          rating: 3.0,
+          joinDate: 'Jul 10, 2023',
+          completedJobs: 47,
+          pendingJobs: 2
+        },
+        'W-0045': {
+          name: 'Maria Garcia',
+          role: 'Cleaning Supervisor',
+          specialization: 'General Cleaning',
+          phone: '+1 (456) 789-0123',
+          email: 'maria.garcia@example.com',
+          properties: ['Urban Residences'],
+          rating: 5.0,
+          joinDate: 'Oct 05, 2023',
+          completedJobs: 78,
+          pendingJobs: 0
+        },
+        'W-0056': {
+          name: 'David Wilson',
+          role: 'Maintenance Technician',
+          specialization: 'HVAC, Electrical',
+          phone: '+1 (567) 890-1234',
+          email: 'david.wilson@example.com',
+          properties: ['Sunset Apartments'],
+          rating: 3.5,
+          joinDate: 'Feb 18, 2024',
+          completedJobs: 32,
+          pendingJobs: 4
+        }
+      };
+      
+      const worker = workerData[workerId];
+      
+      if (worker) {
+        // Build stars HTML based on rating
+        let starsHtml = '';
+        const fullStars = Math.floor(worker.rating);
+        const halfStar = worker.rating % 1 >= 0.5;
+        const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+        
+        for (let i = 0; i < fullStars; i++) {
+          starsHtml += '<i class="fas fa-star text-yellow-400"></i>';
+        }
+        
+        if (halfStar) {
+          starsHtml += '<i class="fas fa-star-half-alt text-yellow-400"></i>';
+        }
+        
+        for (let i = 0; i < emptyStars; i++) {
+          starsHtml += '<i class="far fa-star text-yellow-400"></i>';
+        }
+        
+        // Build the HTML content
+        workerProfileContent.innerHTML = `
+          <div class="col-span-1">
+            <div class="bg-gray-50 p-4 rounded-md flex flex-col items-center">
+              <img src="/api/placeholder/120/120" alt="${worker.name}" class="rounded-full w-32 h-32 mb-4">
+              <h4 class="text-lg font-semibold">${worker.name}</h4>
+              <p class="text-gray-600">${worker.role}</p>
+              <div class="flex items-center mt-2">
+                ${starsHtml}
+                <span class="ml-2">${worker.rating}</span>
+              </div>
+              <div class="mt-4 w-full">
+                <div class="flex justify-between mb-2">
+                  <span class="text-sm text-gray-600">ID:</span>
+                  <span class="text-sm font-medium">${workerId}</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                  <span class="text-sm text-gray-600">Joined:</span>
+                  <span class="text-sm font-medium">${worker.joinDate}</span>
+                </div>
+                <div class="flex justify-between mb-2">
+                  <span class="text-sm text-gray-600">Completed Jobs:</span>
+                  <span class="text-sm font-medium">${worker.completedJobs}</span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-sm text-gray-600">Pending Jobs:</span>
+                  <span class="text-sm font-medium">${worker.pendingJobs}</span>
+                </div>
+              </div>
+              <div class="mt-6 w-full">
+                <button class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                  <i class="fas fa-envelope mr-2"></i> Send Message
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-span-2">
+            <div class="bg-gray-50 p-4 rounded-md mb-4">
+              <h4 class="text-lg font-semibold mb-4">Contact Information</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-600 mb-1">Phone</p>
+                  <p class="font-medium">${worker.phone}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600 mb-1">Email</p>
+                  <p class="font-medium">${worker.email}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600 mb-1">Specialization</p>
+                  <p class="font-medium">${worker.specialization}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600 mb-1">Assigned Properties</p>
+                  <p class="font-medium">${worker.properties.join(', ')}</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-md mb-4">
+              <h4 class="text-lg font-semibold mb-4">Recent Work Orders</h4>
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-100">
+                  <tr>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Property</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">WO-2023-0145</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">Sunset Apartments, Unit 302</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">Plumbing</td>
+                    <td class="px-4 py-2 whitespace-nowrap">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                    </td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">Apr 15, 2025</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">WO-2023-0146</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">Green Valley Heights, Unit 105</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">HVAC</td>
+                    <td class="px-4 py-2 whitespace-nowrap">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">In Progress</span>
+                    </td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">Apr 17, 2025</td>
+                  </tr>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">WO-2023-0147</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">Urban Residences, Unit 201</td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">Electrical</td>
+                    <td class="px-4 py-2 whitespace-nowrap">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Scheduled</span>
+                    </td>
+                    <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900">Apr 19, 2025</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-md">
+              <h4 class="text-lg font-semibold mb-4">Performance History</h4>
+              <canvas id="workerPerformanceHistory"></canvas>
+            </div>
+          </div>
+        `;
+        
+        // Show the modal
+        workerProfileModal.classList.remove('hidden');
+        
+        // Create performance history chart
+        setTimeout(() => {
+          const perfHistoryCtx = document.getElementById('workerPerformanceHistory').getContext('2d');
+          const perfHistoryChart = new Chart(perfHistoryCtx, {
+            type: 'line',
+            data: {
+              labels: ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'],
+              datasets: [{
+                label: 'Monthly Rating',
+                data: [3.8, 4.0, 4.2, 4.3, 4.5, 4.5],
+                borderColor: 'rgba(52, 152, 219, 1)',
+                backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                tension: 0.3,
+                fill: true
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: false,
+                  min: 3,
+                  max: 5
+                }
+              }
+            }
+          });
+        }, 100);
+      }
+    }
+    
+    // Close modals when clicking outside
+    window.addEventListener('click', (e) => {
+      const addWorkerModal = document.getElementById('addWorkerModal');
+      const workerProfileModal = document.getElementById('workerProfileModal');
+      
+      if (e.target === addWorkerModal) {
+        addWorkerModal.classList.add('hidden');
+      }
+      
+      if (e.target === workerProfileModal) {
+        workerProfileModal.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

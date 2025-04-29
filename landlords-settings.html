@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartRent - Landlord Dashboard</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+  <style>
+    :root {
+      --primary: #3498db;
+      --primary-dark: #2980b9;
+      --secondary: #2ecc71;
+      --danger: #e74c3c;
+      --warning: #f39c12;
+      --info: #1abc9c;
+      --dark: #34495e;
+      --light: #ecf0f1;
+      --gray: #95a5a6;
+      --white: #ffffff;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7fa;
+    }
+    
+    .navbar {
+      background-color: var(--white);
+      box-shadow: var(--shadow);
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo i {
+      margin-right: 0.5rem;
+    }
+    
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+    
+    .nav-links li {
+      margin: 0 0.8rem;
+    }
+    
+    .nav-links a {
+      text-decoration: none;
+      color: var(--dark);
+      font-weight: 500;
+      padding: 0.5rem 0.8rem;
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+    
+    .nav-links a:hover, .nav-links a.active {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+    
+    .nav-right {
+      display: flex;
+      align-items: center;
+    }
+    
+    .notification {
+      position: relative;
+      margin-right: 1.5rem;
+      cursor: pointer;
+    }
+    
+    .notification-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: var(--danger);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.7rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .profile {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+      object-fit: cover;
+    }
+    
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background-color: var(--dark);
+      margin: 2px 0;
+      transition: all 0.3s;
+    }
+    
+    
+    .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Sidebar */
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding-top: 20px;
+            position: fixed;
+            height: 100vh;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 4px;
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .page-header {
+            margin-top: 55px;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .tab-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .tab-item.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Form Styles */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -10px;
+        }
+
+        .form-group {
+            padding: 10px;
+        }
+
+        .form-group-half {
+            width: 50%;
+        }
+
+        .form-group-full {
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 111, 255, 0.25);
+        }
+
+        .input-group {
+            display: flex;
+        }
+
+        .input-group .input-group-prepend {
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-right: none;
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+        }
+
+        .input-group .form-control {
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            color: #212529;
+            text-align: center;
+            vertical-align: middle;
+            cursor: pointer;
+            background-color: transparent;
+            border: 1px solid transparent;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            color: #5d88e4;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            color: #6a87d6;
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+        .btn-success {
+            color: #fff;
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+        .btn-light {
+            color: #212529;
+            background-color: var(--light-color);
+            border-color: var(--light-color);
+        }
+
+        .btn-light:hover {
+            background-color: #e2e6ea;
+            border-color: #dae0e5;
+        }
+
+        /* Settings specific styles */
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #6c757d;
+            margin-right: 20px;
+        }
+
+        .profile-info {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        /* Tags Input */
+        .tags-input {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .tags-input .tag {
+            display: inline-block;
+            background-color: #e9f5ff;
+            color: var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .tags-input .tag .close {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .tags-input input {
+            border: none;
+            outline: none;
+            padding: 5px;
+            font-size: 1rem;
+        }
+
+        /* Notification Item */
+        .notification-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            background-color: #f8f9fa;
+            margin-bottom: 10px;
+        }
+
+        .notification-info h4 {
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .notification-info p {
+            color: #6c757d;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        /* Table Styles */
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px 15px;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #dee2e6;
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        /* Password strength indicator */
+        .password-strength {
+            margin-top: 10px;
+        }
+
+        .strength-bar {
+            height: 5px;
+            margin-bottom: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+        }
+
+        .strength-bar div {
+            height: 100%;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+        .strength-bar.weak div {
+            width: 33%;
+            background-color: var(--danger-color);
+        }
+
+        .strength-bar.medium div {
+            width: 66%;
+            background-color: var(--warning-color);
+        }
+
+        .strength-bar.strong div {
+            width: 100%;
+            background-color: var(--success-color);
+        }
+
+        .strength-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+        }
+
+        .strength-text span {
+            color: #6c757d;
+        }
+
+        .strength-text span.active {
+            font-weight: 500;
+        }
+
+        .strength-text span.weak.active {
+            color: var(--danger-color);
+        }
+
+        .strength-text span.medium.active {
+            color: var(--warning-color);
+        }
+
+        .strength-text span.strong.active {
+            color: var(--success-color);
+        }
+
+        /* Password requirements */
+        .password-requirements {
+            margin-top: 15px;
+        }
+
+        .password-requirements p {
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .password-requirements ul {
+            list-style-type: none;
+            padding-left: 5px;
+        }
+
+        .password-requirements li {
+            margin-bottom: 5px;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-requirements li i {
+            margin-right: 5px;
+        }
+
+        .password-requirements li.valid {
+            color: var(--success-color);
+        }
+
+        .password-requirements li.invalid {
+            color: var(--danger-color);
+        }
+
+        /* Form actions */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .form-actions .btn {
+            margin-left: 10px;
+        }
+    
+    @media (max-width: 992px) {
+      .charts-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .nav-links, .nav-right {
+        display: none;
+      }
+      
+      .nav-links.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background-color: var(--white);
+        box-shadow: var(--shadow);
+        padding: 1rem;
+      }
+      
+      .nav-links.active li {
+        margin: 0.8rem 0;
+      }
+      
+      .hamburger {
+        display: flex;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navbar -->
+  <nav class="navbar">
+    <div class="logo">
+      <i class="fas fa-building"></i>
+      <span>SmartRent</span>
+    </div>
+    
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Dashboard</a></li>
+      <li><a href="apartments.html">Apartments</a></li>
+      <li><a href="tenants.html">Tenants</a></li>
+      <li><a href="workers.html">Workers</a></li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="notifications.html">Notifications</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    
+    
+    <div class="nav-right">
+      <div class="notification">
+        <i class="fas fa-bell"></i>
+        <span class="notification-count">3</span>
+      </div>
+      
+      <div class="profile">
+        <img src="/api/placeholder/40/40" alt="Profile Picture">
+        <span>John Doe</span>
+      </div>
+    </div>
+    
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </nav>
+
+          <!-- Main Content -->
+          <div class="main-content">
+            <div class="page-header">
+                <h1>Settings</h1>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="tabs">
+                        <div class="tab-item active" data-tab="profile">
+                            <i class="fas fa-user"></i> Profile
+                        </div>
+                        <div class="tab-item" data-tab="properties">
+                            <i class="fas fa-building"></i> Properties
+                        </div>
+                        <div class="tab-item" data-tab="notifications">
+                            <i class="fas fa-bell"></i> Notifications
+                        </div>
+                        <div class="tab-item" data-tab="security">
+                            <i class="fas fa-lock"></i> Security
+                        </div>
+                        <div class="tab-item" data-tab="payment">
+                            <i class="fas fa-credit-card"></i> Payment Methods
+                        </div>
+                        <div class="tab-item" data-tab="documents">
+                            <i class="fas fa-file-alt"></i> Documents
+                        </div>
+                    </div>
+
+                    <!-- Profile Settings -->
+                    <div class="tab-content active" id="profile">
+                        <div class="profile-info">
+                            <div class="profile-pic">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div>
+                                <h3>Profile Photo</h3>
+                                <p>Upload a profile photo to personalize your account</p>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-upload"></i> Upload Photo
+                                </button>
+                            </div>
+                        </div>
+
+                        <form id="profileForm">
+                            <div class="form-row">
+                                <div class="form-group form-group-half">
+                                    <label for="fullName">Full Name</label>
+                                    <input type="text" class="form-control" id="fullName" placeholder="Enter your full name">
+                                </div>
+                                <div class="form-group form-group-half">
+                                    <label for="idNumber">ID Number</label>
+                                    <input type="text" class="form-control" id="idNumber" placeholder="Enter your ID number">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group form-group-half">
+                                    <label for="email">Email Address</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <i class="fas fa-envelope"></i>
+                                        </div>
+                                        <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-half">
+                                    <label for="phone">Phone Number</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <i class="fas fa-phone"></i>
+                                        </div>
+                                        <input type="tel" class="form-control" id="phone" placeholder="Enter your phone number">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group form-group-half">
+                                    <label for="address">Address</label>
+                                    <input type="text" class="form-control" id="address" placeholder="Enter your address">
+                                </div>
+                                <div class="form-group form-group-half">
+                                    <label for="city">City</label>
+                                    <input type="text" class="form-control" id="city" placeholder="Enter your city">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group form-group-half">
+                                    <label for="county">County</label>
+                                    <select class="form-control" id="county">
+                                        <option value="">Select County</option>
+                                        <option value="nairobi">Nairobi</option>
+                                        <option value="mombasa">Mombasa</option>
+                                        <option value="kisumu">Kisumu</option>
+                                        <option value="nakuru">Nakuru</option>
+                                        <option value="eldoret">Eldoret</option>
+                                    </select>
+                                </div>
+                                <div class="form-group form-group-half">
+                                    <label for="taxPin">Tax Information (KRA PIN)</label>
+                                    <input type="text" class="form-control" id="taxPin" placeholder="Enter your KRA PIN">
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-light">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Properties Settings -->
+                    <div class="tab-content" id="properties">
+                        <h3>Default Property Settings</h3>
+                        <form id="propertiesForm">
+                            <div class="form-row">
+                                <div class="form-group form-group-half">
+                                    <label for="defaultRentDue">Default Rent Due Date</label>
+                                    <select class="form-control" id="defaultRentDue">
+                                        <option value="1">1st day of the month</option>
+                                        <option value="5">5th day of the month</option>
+                                        <option value="10">10th day of the month</option>
+                                        <option value="15">15th day of the month</option>
+                                        <option value="28">28th day of the month</option>
+                                    </select>
+                                </div>
+                                <div class="form-group form-group-half">
+                                    <label for="defaultLateFee">Default Late Fee</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            KSh
+                                        </div>
+                                        <input type="number" class="form-control" id="defaultLateFee" placeholder="Amount">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group form-group-half">
+                                    <label for="gracePeriod">Late Fee Grace Period (Days)</label>
+                                    <input type="number" class="form-control" id="gracePeriod" placeholder="Days">
+                                </div>
+                                <div class="form-group form-group-half">
+                                    <label for="defaultLease">Default Lease Duration</label>
+                                    <select class="form-control" id="defaultLease">
+                                        <option value="1">1 Month</option>
+                                        <option value="3">3 Months</option>
+                                        <option value="6">6 Months</option>
+                                        <option value="12">12 Months</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group form-group-half">
+                                    <label for="defaultCurrency">Default Currency</label>
+                                    <select class="form-control" id="defaultCurrency">
+                                        <option value="KES">Kenyan Shilling (KES)</option>
+                                        <option value="USD">US Dollar (USD)</option>
+                                        <option value="EUR">Euro (EUR)</option>
+                                        <option value="GBP">British Pound (GBP)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group form-group-half">
+                                    <label for="securityDeposit">Default Security Deposit (Months)</label>
+                                    <input type="number" class="form-control" id="securityDeposit" placeholder="Number of months">
+                                </div>
+                            </div>
+
+                            <h3 class="mt-4">Property Categories</h3>
+                            <div class="form-group">
+                                <label>Property Categories</label>
+                                <div class="tags-input" id="categoriesTags">
+                                    <span class="tag">Residential <span class="close">&times;</span></span>
+                                    <span class="tag">Commercial <span class="close">&times;</span></span>
+                                    <span class="tag">Apartments <span class="close">&times;</span></span>
+                                    <span class="tag">Single Rooms <span class="close">&times;</span></span>
+                                    <input type="text" placeholder="Add new category" id="categoryInput">
+                                </div>
+                                <button type="button" class="btn btn-primary" id="addCategoryBtn">Add Category</button>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-light">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Notifications Settings -->
+                    <div class="tab-content" id="notifications">
+                        <h3>Email Notifications</h3>
+                        <div class="notification-group">
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <h4>Rent Payment Alerts</h4>
+                                    <p>Get notified when tenants make rent payments</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <h4>Rent Due Reminders</h4>
+                                    <p>Get notified when rent is due or overdue</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <h4>Tenant Requests</h4>
+                                    <p>Get notified when tenants submit service requests</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <h4>Vacancy Updates</h4>
+                                    <p>Get notified when units become vacant</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <h3 class="mt-4">SMS Notifications</h3>
+                        <div class="notification-group">
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <h4>Payment Confirmations</h4>
+                                    <p>Receive SMS when payments are made</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <h4>Emergency Requests</h4>
+                                    <p>Receive SMS for urgent maintenance requests</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <h3 class="mt-4">Notification Templates</h3>
+                        <div class="form-group">
+                            <label for="paymentTemplate">Payment Confirmation</label>
+                            <textarea class="form-control" id="paymentTemplate" rows="3">
+                                textarea class="form-control" id="paymentTemplate" rows="3">Dear {tenant_name}, we have received your payment of KSh {amount} for {apartment_name}, Unit {unit_number}, Room {room_number}. Transaction ID: {transaction_id}. Thank you!</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="reminderTemplate">Rent Reminder</label>
+                                <textarea class="form-control" id="reminderTemplate" rows="3">Dear {tenant_name}, this is a friendly reminder that your rent of KSh {amount} for {apartment_name}, Unit {unit_number}, Room {room_number} is due on {due_date}. Please make your payment on time.</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="lateFeeTemplate">Late Fee Notice</label>
+                                <textarea class="form-control" id="lateFeeTemplate" rows="3">Dear {tenant_name}, your rent payment for {apartment_name}, Unit {unit_number}, Room {room_number} is overdue. A late fee of KSh {late_fee} has been applied. Please make your payment promptly.</textarea>
+                            </div>
+    
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-light">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </div>
+    
+                        <!-- Security Settings -->
+                        <div class="tab-content" id="security">
+                            <h3>Password Management</h3>
+                            <form id="securityForm">
+                                <div class="form-row">
+                                    <div class="form-group form-group-half">
+                                        <label for="currentPassword">Current Password</label>
+                                        <input type="password" class="form-control" id="currentPassword" placeholder="Enter your current password">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group form-group-half">
+                                        <label for="newPassword">New Password</label>
+                                        <input type="password" class="form-control" id="newPassword" placeholder="Enter a new password">
+                                        <div class="password-strength">
+                                            <div class="strength-bar weak">
+                                                <div></div>
+                                            </div>
+                                            <div class="strength-text">
+                                                <span class="weak active">Weak</span>
+                                                <span class="medium">Medium</span>
+                                                <span class="strong">Strong</span>
+                                            </div>
+                                        </div>
+                                        <div class="password-requirements">
+                                            <p>Password Requirements:</p>
+                                            <ul>
+                                                <li class="invalid"><i class="fas fa-times-circle"></i> At least 8 characters</li>
+                                                <li class="invalid"><i class="fas fa-times-circle"></i> At least one uppercase letter</li>
+                                                <li class="invalid"><i class="fas fa-times-circle"></i> At least one number</li>
+                                                <li class="invalid"><i class="fas fa-times-circle"></i> At least one special character</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group-half">
+                                        <label for="confirmPassword">Confirm New Password</label>
+                                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your new password">
+                                    </div>
+                                </div>
+    
+                                <h3 class="mt-4">Two-Factor Authentication</h3>
+                                <div class="notification-item">
+                                    <div class="notification-info">
+                                        <h4>Enable Two-Factor Authentication</h4>
+                                        <p>Require a verification code when signing in</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="twoFactorAuth">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+    
+                                <div id="twoFactorOptions" style="display: none; margin-top: 20px;">
+                                    <div class="form-group">
+                                        <label>Verification Method</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="2faMethod" id="smsMethod" checked>
+                                            <label class="form-check-label" for="smsMethod">
+                                                SMS to registered phone number
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="2faMethod" id="emailMethod">
+                                            <label class="form-check-label" for="emailMethod">
+                                                Email to registered email address
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="2faMethod" id="appMethod">
+                                            <label class="form-check-label" for="appMethod">
+                                                Authentication app (Google Authenticator, Authy, etc.)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <h3 class="mt-4">Account Security</h3>
+                                <div class="notification-item">
+                                    <div class="notification-info">
+                                        <h4>Login Notifications</h4>
+                                        <p>Receive email alerts when your account is accessed from a new device</p>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+    
+                                <div class="form-actions">
+                                    <button type="button" class="btn btn-light">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+    
+                        <!-- Payment Methods Settings -->
+                        <div class="tab-content" id="payment">
+                            <h3>Payment Methods</h3>
+                            <div class="card" style="margin-bottom: 20px;">
+                                <div class="card-header">
+                                    <h4>M-Pesa Integration</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form id="mpesaForm">
+                                        <div class="form-row">
+                                            <div class="form-group form-group-half">
+                                                <label for="mpesaBusinessNo">M-Pesa Business Number</label>
+                                                <input type="text" class="form-control" id="mpesaBusinessNo" placeholder="Enter M-Pesa business number">
+                                            </div>
+                                            <div class="form-group form-group-half">
+                                                <label for="mpesaShortcode">M-Pesa Shortcode</label>
+                                                <input type="text" class="form-control" id="mpesaShortcode" placeholder="Enter M-Pesa shortcode">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group form-group-half">
+                                                <label for="mpesaApiKey">API Key</label>
+                                                <input type="password" class="form-control" id="mpesaApiKey" placeholder="Enter M-Pesa API key">
+                                            </div>
+                                            <div class="form-group form-group-half">
+                                                <label for="mpesaApiSecret">API Secret</label>
+                                                <input type="password" class="form-control" id="mpesaApiSecret" placeholder="Enter M-Pesa API secret">
+                                            </div>
+                                        </div>
+                                        <div class="notification-item">
+                                            <div class="notification-info">
+                                                <h4>Enable M-Pesa Integration</h4>
+                                                <p>Allow tenants to pay rent using M-Pesa</p>
+                                            </div>
+                                            <label class="switch">
+                                                <input type="checkbox" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+    
+                            <div class="card" style="margin-bottom: 20px;">
+                                <div class="card-header">
+                                    <h4>Bank Account</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form id="bankForm">
+                                        <div class="form-row">
+                                            <div class="form-group form-group-half">
+                                                <label for="bankName">Bank Name</label>
+                                                <input type="text" class="form-control" id="bankName" placeholder="Enter bank name">
+                                            </div>
+                                            <div class="form-group form-group-half">
+                                                <label for="accountName">Account Name</label>
+                                                <input type="text" class="form-control" id="accountName" placeholder="Enter account name">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group form-group-half">
+                                                <label for="accountNumber">Account Number</label>
+                                                <input type="text" class="form-control" id="accountNumber" placeholder="Enter account number">
+                                            </div>
+                                            <div class="form-group form-group-half">
+                                                <label for="branchCode">Branch Code</label>
+                                                <input type="text" class="form-control" id="branchCode" placeholder="Enter branch code">
+                                            </div>
+                                        </div>
+                                        <div class="notification-item">
+                                            <div class="notification-info">
+                                                <h4>Enable Bank Transfer</h4>
+                                                <p>Allow tenants to pay rent via bank transfer</p>
+                                            </div>
+                                            <label class="switch">
+                                                <input type="checkbox" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+    
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Cash Payment</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="notification-item">
+                                        <div class="notification-info">
+                                            <h4>Enable Cash Payment</h4>
+                                            <p>Allow tenants to pay rent in cash (requires manual entry)</p>
+                                        </div>
+                                        <label class="switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cashPaymentInstructions">Cash Payment Instructions</label>
+                                        <textarea class="form-control" id="cashPaymentInstructions" rows="3" placeholder="Enter instructions for cash payments (e.g., office hours, location)">Cash payments can be made at the property management office from Monday to Friday, 8:00 AM to 5:00 PM. Please ensure you receive a receipt for your payment.</textarea>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-light">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </div>
+    
+                        <!-- Documents Settings -->
+                        <div class="tab-content" id="documents">
+                            <h3>Document Templates</h3>
+                            <div class="notification-item">
+                                <div class="notification-info">
+                                    <h4>Enable Automated Document Generation</h4>
+                                    <p>Automatically generate tenant documents based on templates</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+    
+                            <div class="table-responsive" style="margin-top: 20px;">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Document Type</th>
+                                            <th>Last Updated</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Lease Agreement</td>
+                                            <td>10-Apr-2025</td>
+                                            <td><span class="badge" style="background-color: var(--success-color); color: white; padding: 5px 10px; border-radius: 20px;">Active</span></td>
+                                            <td>
+                                                <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                                <button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Download</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Rent Receipt</td>
+                                            <td>05-Apr-2025</td>
+                                            <td><span class="badge" style="background-color: var(--success-color); color: white; padding: 5px 10px; border-radius: 20px;">Active</span></td>
+                                            <td>
+                                                <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                                <button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Download</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Notice to Vacate</td>
+                                            <td>02-Apr-2025</td>
+                                            <td><span class="badge" style="background-color: var(--success-color); color: white; padding: 5px 10px; border-radius: 20px;">Active</span></td>
+                                            <td>
+                                                <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                                <button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Download</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Service Request Form</td>
+                                            <td>29-Mar-2025</td>
+                                            <td><span class="badge" style="background-color: var(--success-color); color: white; padding: 5px 10px; border-radius: 20px;">Active</span></td>
+                                            <td>
+                                                <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                                <button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Download</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Property Inspection Report</td>
+                                            <td>25-Mar-2025</td>
+                                            <td><span class="badge" style="background-color: var(--success-color); color: white; padding: 5px 10px; border-radius: 20px;">Active</span></td>
+                                            <td>
+                                                <button class="btn btn-primary btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                                <button class="btn btn-secondary btn-sm"><i class="fas fa-download"></i> Download</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+    
+                            <div style="margin-top: 20px;">
+                                <button class="btn btn-primary"><i class="fas fa-plus"></i> Add New Template</button>
+                            </div>
+    
+                            <h3 class="mt-4">Document Settings</h3>
+                            <form id="documentSettingsForm">
+                                <div class="form-row">
+                                    <div class="form-group form-group-half">
+                                        <label for="companyLogo">Company Logo</label>
+                                        <input type="file" class="form-control" id="companyLogo">
+                                    </div>
+                                    <div class="form-group form-group-half">
+                                        <label for="documentFooter">Document Footer Text</label>
+                                        <input type="text" class="form-control" id="documentFooter" placeholder="Enter footer text for documents">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="legalDisclaimer">Legal Disclaimer</label>
+                                    <textarea class="form-control" id="legalDisclaimer" rows="3" placeholder="Enter legal disclaimer for documents">This document contains confidential information and is intended solely for the addressee. Any unauthorized disclosure, copying, or distribution is prohibited.</textarea>
+                                </div>
+    
+                                <div class="form-actions">
+                                    <button type="button" class="btn btn-light">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <script>
+            // Tab switching functionality
+            document.querySelectorAll('.tab-item').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and content
+                    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+    
+            // Sidebar toggle functionality
+            document.getElementById('sidebarToggle').addEventListener('click', () => {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+    
+            // Two-factor authentication toggle
+            document.getElementById('twoFactorAuth').addEventListener('change', function() {
+                const twoFactorOptions = document.getElementById('twoFactorOptions');
+                if (this.checked) {
+                    twoFactorOptions.style.display = 'block';
+                } else {
+                    twoFactorOptions.style.display = 'none';
+                }
+            });
+    
+            // Password strength checker (simplified)
+            document.getElementById('newPassword').addEventListener('input', function() {
+                const password = this.value;
+                const strengthBar = document.querySelector('.strength-bar');
+                const strengthText = document.querySelector('.strength-text');
+                
+                // Remove all active classes
+                strengthText.querySelectorAll('span').forEach(span => span.classList.remove('active'));
+                strengthBar.classList.remove('weak', 'medium', 'strong');
+                
+                // Check password strength
+                if (password.length > 0) {
+                    if (password.length < 8) {
+                        strengthBar.classList.add('weak');
+                        strengthText.querySelector('.weak').classList.add('active');
+                    } else if (password.length >= 8 && 
+                              (/[A-Z]/.test(password) || /[0-9]/.test(password))) {
+                        strengthBar.classList.add('medium');
+                        strengthText.querySelector('.medium').classList.add('active');
+                    } else if (password.length >= 8 && 
+                               /[A-Z]/.test(password) && 
+                               /[0-9]/.test(password) && 
+                               /[^A-Za-z0-9]/.test(password)) {
+                        strengthBar.classList.add('strong');
+                        strengthText.querySelector('.strong').classList.add('active');
+                    }
+                }
+                
+                // Update requirement indicators
+                const requirements = document.querySelectorAll('.password-requirements li');
+                requirements[0].className = password.length >= 8 ? 'valid' : 'invalid';
+                requirements[0].innerHTML = password.length >= 8 ? 
+                    '<i class="fas fa-check-circle"></i> At least 8 characters' : 
+                    '<i class="fas fa-times-circle"></i> At least 8 characters';
+                    
+                requirements[1].className = /[A-Z]/.test(password) ? 'valid' : 'invalid';
+                requirements[1].innerHTML = /[A-Z]/.test(password) ? 
+                    '<i class="fas fa-check-circle"></i> At least one uppercase letter' : 
+                    '<i class="fas fa-times-circle"></i> At least one uppercase letter';
+                    
+                requirements[2].className = /[0-9]/.test(password) ? 'valid' : 'invalid';
+                requirements[2].innerHTML = /[0-9]/.test(password) ? 
+                    '<i class="fas fa-check-circle"></i> At least one number' : 
+                    '<i class="fas fa-times-circle"></i> At least one number';
+                    
+                requirements[3].className = /[^A-Za-z0-9]/.test(password) ? 'valid' : 'invalid';
+                requirements[3].innerHTML = /[^A-Za-z0-9]/.test(password) ? 
+                    '<i class="fas fa-check-circle"></i> At least one special character' : 
+                    '<i class="fas fa-times-circle"></i> At least one special character';
+            });
+    
+            // Add category functionality
+            document.getElementById('addCategoryBtn').addEventListener('click', function() {
+                const categoryInput = document.getElementById('categoryInput');
+                const categoriesTags = document.getElementById('categoriesTags');
+                
+                if (categoryInput.value.trim() !== '') {
+                    const tag = document.createElement('span');
+                    tag.className = 'tag';
+                    tag.innerHTML = categoryInput.value + ' <span class="close">&times;</span>';
+                    
+                    // Insert before the input
+                    categoriesTags.insertBefore(tag, categoryInput);
+                    categoryInput.value = '';
+                    
+                    // Add event listener to close button
+                    tag.querySelector('.close').addEventListener('click', function() {
+                        this.parentElement.remove();
+                    });
+                }
+            });
+    
+            // Add event listeners to existing tag close buttons
+            document.querySelectorAll('.tag .close').forEach(closeBtn => {
+                closeBtn.addEventListener('click', function() {
+                    this.parentElement.remove();
+                });
+            });
+    
+            // Prevent form submissions (for demo)
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Settings saved successfully!');
+                });
+            });
+        </script>
+  
+</body>
+</html>
