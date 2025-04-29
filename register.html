@@ -1,1 +1,151 @@
-register here
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register | SmartRent</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Same styling as before for brevity */
+  </style>
+</head>
+<body>
+
+  <div class="register-container">
+    <h2>SmartRent Register</h2>
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="fullname">Full Name</label>
+        <input type="text" id="fullname" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" required>
+      </div>
+
+      <div class="form-group password-wrapper">
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+        <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
+        <div class="strength" id="strengthText"></div>
+      </div>
+
+      <div class="form-group password-wrapper">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" required>
+        <span class="toggle-password" onclick="togglePassword('confirmPassword')">👁️</span>
+      </div>
+
+      <div class="form-group">
+        <label for="role">Register as</label>
+        <select id="role" required>
+          <option value="">Select role</option>
+          <option value="Tenant">Tenant</option>
+          <option value="Landlord">Landlord</option>
+          <option value="Shop Manager">Shop Manager</option>
+        </select>
+      </div>
+
+      <div class="remember-me">
+        <input type="checkbox" id="remember" />
+        <label for="remember">Remember Me</label>
+      </div>
+
+      <button type="submit" class="btn">Register</button>
+    </form>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const form = document.getElementById('registerForm');
+    const toast = document.getElementById('toast');
+
+    function togglePassword(id) {
+      const input = document.getElementById(id);
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    function showToast(message, success = false) {
+      toast.textContent = message;
+      toast.className = "toast" + (success ? " success" : "");
+      toast.style.display = "block";
+      setTimeout(() => { toast.style.display = "none"; }, 3500);
+    }
+
+    function checkPasswordStrength(pw) {
+      let strength = 0;
+      if (pw.length >= 8) strength++;
+      if (/[A-Z]/.test(pw)) strength++;
+      if (/\d/.test(pw)) strength++;
+      if (/[@$!%*?&#]/.test(pw)) strength++;
+      return strength;
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const fullName = document.getElementById("fullname").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+      const role = document.getElementById("role").value;
+      const remember = document.getElementById("remember").checked;
+
+      if (!fullName || !email || !password || !confirmPassword || !role) {
+        showToast("All fields are required");
+        return;
+      }
+
+      if (!/^\S+@\S+\.\S+$/.test(email)) {
+        showToast("Invalid email format");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showToast("Passwords do not match");
+        return;
+      }
+
+      if (checkPasswordStrength(password) < 3) {
+        showToast("Password is too weak");
+        return;
+      }
+
+      const payload = {
+        name: fullName,
+        email: email,
+        password: password,
+        role: role
+      };
+
+      try {
+        const res = await fetch("/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Registration failed");
+        }
+
+        if (remember) {
+          localStorage.setItem("rememberedEmail", email);
+        }
+
+        showToast("Registered! Check your email for confirmation.", true);
+        setTimeout(() => {
+          window.location.href = "/login.html";
+        }, 2000);
+
+      } catch (err) {
+        showToast(err.message);
+      }
+    });
+  </script>
+</body>
+</html>
