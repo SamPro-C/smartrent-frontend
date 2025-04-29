@@ -511,7 +511,7 @@
       </div>
       
       <div class="recaptcha-container">
-        Protected by reCAPTCHA v3
+        <i class="fas fa-shield-alt" style="color: #00F0FF; margin-right: 5px;"></i> Protected by reCAPTCHA v3
       </div>
       
       <button class="login-button" disabled>Login</button>
@@ -607,7 +607,7 @@
       </div>
       
       <div class="recaptcha-container">
-        Protected by reCAPTCHA v3
+        <i class="fas fa-shield-alt" style="color: #00F0FF; margin-right: 5px;"></i> Protected by reCAPTCHA v3
       </div>
       
       <button class="login-button" id="register-next-btn">Next</button>
@@ -899,25 +899,290 @@
           regNextBtn.disabled = verificationInput.value.trim().length !== 6;
         }
       }
-    }
+    }// Continuing the existing script...
 
-    // Monitor all form inputs for validation
-    document.querySelectorAll('input').forEach(input => {
+    // Login button functionality
+    loginButton.addEventListener('click', () => {
+      // Simulate loading state
+      loginButton.disabled = true;
+      loginButton.textContent = 'Logging in...';
+      
+      // Simulate API call with timeout
+      setTimeout(() => {
+        // For demo purposes - successful login for specific credentials
+        if (emailInput.value === 'demo@smartrent.com' && passwordInput.value === 'password123') {
+          toastr.success('Login successful! Redirecting...');
+          
+          // Save credentials if remember me is checked
+          if (rememberMe.checked) {
+            localStorage.setItem('smartrent_email', emailInput.value);
+          } else {
+            localStorage.removeItem('smartrent_email');
+          }
+          
+          // Simulate redirect
+          setTimeout(() => {
+            toastr.info('This is a demo. Redirect would happen here.');
+            loginButton.textContent = 'Login';
+            loginButton.disabled = false;
+          }, 2000);
+        } else {
+          // Failed login
+          toastr.error('Invalid email or password');
+          loginButton.textContent = 'Login';
+          loginButton.disabled = false;
+          
+          // Add shake animation to input fields
+          [emailInput, passwordInput].forEach(input => {
+            input.style.borderColor = '#ff3860';
+            input.style.animation = 'shake 0.5s';
+            setTimeout(() => {
+              input.style.animation = '';
+            }, 500);
+          });
+        }
+      }, 1500);
+    });
+
+    // Forgot password functionality
+    forgotPassword.addEventListener('click', () => {
+      const email = emailInput.value;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      
+      if (!emailRegex.test(email)) {
+        toastr.warning('Please enter a valid email first');
+        emailInput.focus();
+        return;
+      }
+      
+      // Simulate password reset request
+      toastr.info('Password reset link sent to your email');
+      
+      // Display a temporary password reset message
+      const passwordField = document.querySelector('.form-group:nth-child(4)');
+      const resetInfo = document.createElement('div');
+      resetInfo.className = 'verification-info';
+      resetInfo.innerHTML = '<i class="fas fa-envelope"></i> Check your email for password reset instructions';
+      resetInfo.style.marginTop = '10px';
+      
+      passwordField.appendChild(resetInfo);
+      setTimeout(() => passwordField.removeChild(resetInfo), 5000);
+    });
+
+    // Signup link functionality
+    signupLink.addEventListener('click', () => {
+      document.querySelector('[data-type="register"]').click();
+    });
+
+    // Add keypress event for login
+    [emailInput, passwordInput].forEach(input => {
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !loginButton.disabled) {
+          loginButton.click();
+        }
+      });
+    });
+
+    // Add validation for registration form inputs
+    document.querySelectorAll('.register-form input').forEach(input => {
       input.addEventListener('input', validateForm);
     });
 
-    // Forgot password
-    forgotPassword.addEventListener('click', () => {
-      const email = emailInput.value;
-      
-      if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        toastr.info(`Password reset link sent to ${email}`);
+    // Add confirmation password match validation
+    const regPasswordInput = document.getElementById('reg-password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    
+    confirmPasswordInput.addEventListener('input', () => {
+      if (regPasswordInput.value !== confirmPasswordInput.value && confirmPasswordInput.value !== '') {
+        confirmPasswordInput.style.borderColor = '#ff3860';
+        
+        // Add password mismatch message if it doesn't exist
+        let mismatchMsg = confirmPasswordInput.parentElement.querySelector('.password-mismatch');
+        if (!mismatchMsg) {
+          mismatchMsg = document.createElement('div');
+          mismatchMsg.className = 'password-strength weak password-mismatch';
+          mismatchMsg.textContent = 'Passwords do not match';
+          confirmPasswordInput.parentElement.appendChild(mismatchMsg);
+        }
       } else {
-        toastr.warning('Please enter a valid email address first');
+        confirmPasswordInput.style.borderColor = confirmPasswordInput.value ? '#00F0FF' : '#2a3035';
+        
+        // Remove password mismatch message if it exists
+        const mismatchMsg = confirmPasswordInput.parentElement.querySelector('.password-mismatch');
+        if (mismatchMsg) {
+          confirmPasswordInput.parentElement.removeChild(mismatchMsg);
+        }
       }
+      
+      validateForm();
     });
 
-    // Simulate reCAPTCHA
+    // Add phone number validation
+    const phoneInput = document.getElementById('phone');
+    phoneInput.addEventListener('input', () => {
+      // Allow only numbers
+      phoneInput.value = phoneInput.value.replace(/[^0-9]/g, '');
+      
+      // Format validation
+      if (phoneInput.value.length > 0 && (phoneInput.value.length < 9 || phoneInput.value.length > 10)) {
+        phoneInput.style.borderColor = '#ff3860';
+      } else {
+        phoneInput.style.borderColor = phoneInput.value ? '#00F0FF' : '#2a3035';
+      }
+      
+      validateForm();
+    });
+
+    // Verification code input validation
+    const verificationInput = document.getElementById('verification-code');
+    verificationInput.addEventListener('input', () => {
+      // Allow only numbers
+      verificationInput.value = verificationInput.value.replace(/[^0-9]/g, '');
+      
+      // Limit to 6 digits
+      if (verificationInput.value.length > 6) {
+        verificationInput.value = verificationInput.value.slice(0, 6);
+      }
+      
+      validateForm();
+    });
+
+    // Add transition effects between registration steps
+    function transitionToNextStep(currentStepEl, nextStepEl) {
+      currentStepEl.style.opacity = '0';
+      currentStepEl.style.transform = 'translateX(-20px)';
+      
+      setTimeout(() => {
+        currentStepEl.style.display = 'none';
+        nextStepEl.style.display = 'block';
+        nextStepEl.style.opacity = '0';
+        nextStepEl.style.transform = 'translateX(20px)';
+        
+        setTimeout(() => {
+          nextStepEl.style.opacity = '1';
+          nextStepEl.style.transform = 'translateX(0)';
+        }, 50);
+      }, 300);
+    }
+
+    // Update the registration step function with transitions
+    regNextBtn.addEventListener('click', () => {
+      // Remove previous click event listener and add a new one
+      regNextBtn.removeEventListener('click', arguments.callee);
+      
+      if (currentStep < 2) {
+        const currentStepEl = regSteps[currentStep];
+        currentStep++;
+        const nextStepEl = regSteps[currentStep];
+        
+        // Update step indicators
+        stepIndicators.forEach((indicator, index) => {
+          indicator.classList.toggle('active', index <= currentStep);
+        });
+        
+        // Apply transition
+        transitionToNextStep(currentStepEl, nextStepEl);
+        
+        // Update button text on last step
+        regNextBtn.textContent = currentStep === 2 ? 'Submit' : 'Next';
+        
+        // Show/hide role-specific fields for step 1
+        if (currentStep === 1) {
+          const activeRole = document.querySelector('.register-form .role-option.active').dataset.role;
+          document.querySelectorAll('.landlord-field').forEach(field => {
+            field.classList.toggle('hidden', activeRole !== 'landlord');
+          });
+          document.querySelectorAll('.tenant-field').forEach(field => {
+            field.classList.toggle('hidden', activeRole !== 'tenant');
+          });
+        }
+        
+        // For step 2, simulate sending verification code
+        if (currentStep === 2) {
+          const regEmailInput = document.getElementById('reg-email');
+          toastr.info(`Verification code sent to ${regEmailInput.value}`);
+        }
+      } else {
+        // Handle form submission
+        const fullnameInput = document.getElementById('fullname');
+        
+        // Show loading state
+        regNextBtn.disabled = true;
+        regNextBtn.textContent = 'Processing...';
+        
+        // Simulate API call with timeout
+        setTimeout(() => {
+          toastr.success(`Registration successful! Welcome, ${fullnameInput.value}. Please wait for approval.`);
+          
+          // Switch back to login
+          setTimeout(() => {
+            document.querySelector('[data-type="login"]').click();
+          }, 2000);
+        }, 1500);
+      }
+      
+      // Re-add the click event listener
+      regNextBtn.addEventListener('click', arguments.callee);
+    });
+
+    // Apply styles to registration steps for transitions
+    regSteps.forEach(step => {
+      step.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+    });
+
+    // Add keypress event for registration
+    document.querySelectorAll('.register-form input').forEach(input => {
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !regNextBtn.disabled) {
+          regNextBtn.click();
+        }
+      });
+    });
+
+    // Add shake animation for invalid inputs
+    document.head.insertAdjacentHTML('beforeend', `
+      <style>
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          20%, 60% { transform: translateX(-5px); }
+          40%, 80% { transform: translateX(5px); }
+        }
+      </style>
+    `);
+
+    // Initial form validation
+    validateForm();
+
+    // Add back to login functionality
+    backToLoginLink.addEventListener('click', () => {
+      document.querySelector('[data-type="login"]').click();
+    });
+
+    // Simulate a brief loading indicator for recaptcha
+    recaptchaContainer.forEach(container => {
+      setTimeout(() => {
+        container.innerHTML = '<i class="fas fa-check-circle" style="color: #00cc88; margin-right: 5px;"></i> reCAPTCHA verification completed';
+      }, 1500);
+    });
+
+    // Demo credentials helper - add a small hint after a few seconds
     setTimeout(() => {
-      recaptchaContainer.forEach(container => {
-        container.innerHTML = '<div style="display: flex; align-items: center;"><i class="fas fa-shield-alt" style="color: #00F0FF; margin-right: 5px;"></i> Protecte
+      const demoHint = document.createElement('div');
+      demoHint.className = 'verification-info';
+      demoHint.innerHTML = '<i class="fas fa-info-circle"></i> Demo credentials: demo@smartrent.com / password123';
+      demoHint.style.marginTop = '10px';
+      demoHint.style.cursor = 'pointer';
+      demoHint.onclick = () => {
+        emailInput.value = 'demo@smartrent.com';
+        passwordInput.value = 'password123';
+        validateForm();
+      };
+      
+      loginForm.appendChild(demoHint);
+    }, 3000);
+
+    </script>
+
+
+    </body>
+    </html>
