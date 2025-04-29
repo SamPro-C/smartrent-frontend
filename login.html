@@ -1,1 +1,923 @@
-login here
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartRent Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #121417;
+      background-image: radial-gradient(circle at center, #1d2127, #121417);
+    }
+
+    .login-container {
+      position: relative;
+      width: 380px;
+      height: 580px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-form {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+      padding: 20px;
+    }
+
+    .circle-border {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+
+    .circle-border::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(
+        transparent, 
+        transparent, 
+        transparent, 
+        #00F0FF
+      );
+      animation: rotate 4s linear infinite;
+    }
+
+    .circle-border::after {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      background: #1a1d21;
+      border-radius: 50%;
+    }
+
+    @keyframes rotate {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .logo {
+      width: 140px;
+      height: 40px;
+      margin-bottom: 15px;
+      background: #00F0FF;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 5px;
+      font-weight: bold;
+      color: #121417;
+    }
+
+    .login-title {
+      color: #00F0FF;
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    .role-selector {
+      display: flex;
+      flex-wrap: wrap;
+      width: 85%;
+      margin-bottom: 20px;
+      background: #1c1f23;
+      border-radius: 50px;
+      overflow: hidden;
+    }
+
+    .role-option {
+      flex: 1 0 50%;
+      text-align: center;
+      padding: 10px 0;
+      color: #777;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 13px;
+    }
+
+    .role-option:nth-child(1), .role-option:nth-child(2) {
+      flex-basis: 33.33%;
+    }
+
+    .role-option:nth-child(3), .role-option:nth-child(4), .role-option:nth-child(5) {
+      flex-basis: 33.33%;
+    }
+
+    .role-option.active {
+      background: #00F0FF;
+      color: #121417;
+      font-weight: 600;
+    }
+
+    .form-group {
+      position: relative;
+      width: 85%;
+      margin-bottom: 15px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #2a3035;
+      border-radius: 50px;
+      background-color: #1c1f23;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: 0.3s ease;
+    }
+
+    .form-group label {
+      position: absolute;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: #777;
+      pointer-events: none;
+      transition: 0.3s ease;
+    }
+
+    .form-group input:focus ~ label,
+    .form-group input:valid ~ label {
+      top: 1px;
+      left: 20px;
+      font-size: 10px;
+      padding: 0 5px;
+      background: #1f293a;
+      color: #00F0FF;
+    }
+
+    .form-group input:focus,
+    .form-group input:valid {
+      border-color: #00F0FF;
+    }
+
+    .form-group .toggle-password {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #777;
+      cursor: pointer;
+      transition: 0.3s;
+      z-index: 2;
+    }
+
+    .form-group .toggle-password:hover {
+      color: #00F0FF;
+    }
+    
+    .password-strength {
+      position: absolute;
+      bottom: -15px;
+      left: 20px;
+      font-size: 10px;
+      color: #777;
+      transition: 0.3s;
+    }
+    
+    .password-strength.weak { color: #ff3860; }
+    .password-strength.medium { color: #ffdd57; }
+    .password-strength.strong { color: #00cc88; }
+
+    .options-row {
+      display: flex;
+      justify-content: space-between;
+      width: 85%;
+      margin-bottom: 5px;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      color: #888;
+    }
+
+    .remember-me input {
+      margin-right: 5px;
+    }
+
+    .forgot-password {
+      color: #888;
+      font-size: 12px;
+      text-align: right;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .forgot-password:hover {
+      color: #00F0FF;
+    }
+
+    .login-button {
+      background-color: #00F0FF;
+      color: #121417;
+      border: none;
+      padding: 10px 0;
+      width: 85%;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: 0.3s;
+    }
+
+    .login-button:hover:not(:disabled) {
+      background-color: #00d8e6;
+      transform: scale(1.03);
+    }
+
+    .login-button:disabled {
+      background-color: #2a3035;
+      color: #777;
+      cursor: not-allowed;
+    }
+
+    .auth-type-toggle {
+      width: 85%;
+      display: flex;
+      justify-content: center;
+      margin: 10px 0;
+    }
+
+    .auth-type-toggle span {
+      cursor: pointer;
+      padding: 5px 15px;
+      font-size: 14px;
+      color: #777;
+      transition: 0.3s;
+    }
+
+    .auth-type-toggle span.active {
+      color: #00F0FF;
+      font-weight: 600;
+    }
+
+    .auth-type-toggle span:hover:not(.active) {
+      color: #aaa;
+    }
+
+    .verification-info {
+      width: 85%;
+      margin: 10px 0;
+      font-size: 12px;
+      color: #888;
+      text-align: center;
+    }
+
+    .verification-info i {
+      color: #00F0FF;
+      margin-right: 5px;
+    }
+
+    .recaptcha-container {
+      width: 85%;
+      margin: 15px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 40px;
+      background-color: #1c1f23;
+      border-radius: 5px;
+      color: #777;
+      font-size: 12px;
+    }
+
+    .signup-link {
+      margin-top: 15px;
+      color: #00F0FF;
+      font-size: 14px;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .signup-link:hover {
+      color: #00d8e6;
+      text-decoration: underline;
+    }
+
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    .toast {
+      padding: 15px 20px;
+      border-radius: 5px;
+      color: white;
+      margin-bottom: 10px;
+      min-width: 250px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .toast.success { background-color: #00cc88; }
+    .toast.error { background-color: #ff3860; }
+    .toast.warning { background-color: #ffdd57; color: #121417; }
+    .toast.info { background-color: #00F0FF; color: #121417; }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .email-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: #1c1f23;
+      border-radius: 5px;
+      z-index: 10;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .email-suggestions.show {
+      max-height: 150px;
+      border: 1px solid #2a3035;
+      margin-top: 5px;
+    }
+
+    .email-suggestion {
+      padding: 8px 15px;
+      cursor: pointer;
+      color: #777;
+      font-size: 13px;
+    }
+
+    .email-suggestion:hover {
+      background: #282d33;
+      color: #00F0FF;
+    }
+
+    .phone-code {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #777;
+      font-size: 14px;
+    }
+
+    .form-group.with-code input {
+      padding-left: 55px;
+    }
+
+    .form-group.hidden {
+      display: none;
+    }
+
+    .register-form {
+      width: 100%;
+      height: 100%;
+      display: none;
+    }
+
+    .step-indicator {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+      width: 85%;
+    }
+
+    .step {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #2a3035;
+      margin: 0 5px;
+      transition: 0.3s;
+    }
+
+    .step.active {
+      background-color: #00F0FF;
+      transform: scale(1.2);
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        width: 90%;
+        height: auto;
+        padding: 30px 0;
+      }
+
+      .circle-border {
+        border-radius: 20px;
+      }
+
+      .circle-border::after {
+        border-radius: 20px;
+      }
+      
+      .login-form {
+        padding: 40px 20px;
+      }
+
+      .role-option {
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="circle-border"></div>
+    
+    <!-- Login Form -->
+    <div class="login-form">
+      <div class="logo">SMARTRENT</div>
+      
+      <!-- Auth Type Toggle -->
+      <div class="auth-type-toggle">
+        <span class="active" data-type="login">Login</span>
+        <span data-type="register">Register</span>
+      </div>
+      
+      <h2 class="login-title">Login</h2>
+      
+      <!-- Expanded Role Selector -->
+      <div class="role-selector">
+        <div class="role-option active" data-role="tenant">Tenant</div>
+        <div class="role-option" data-role="landlord">Landlord</div>
+        <div class="role-option" data-role="worker">Worker</div>
+        <div class="role-option" data-role="shop">Shop Manager</div>
+        <div class="role-option" data-role="admin">Admin</div>
+      </div>
+      
+      <div class="form-group">
+        <input type="email" id="email" required>
+        <label>Email</label>
+        <div class="email-suggestions"></div>
+      </div>
+      
+      <div class="form-group">
+        <input type="password" id="password" required>
+        <label>Password</label>
+        <i class="toggle-password fas fa-eye-slash"></i>
+        <div class="password-strength"></div>
+      </div>
+      
+      <div class="options-row">
+        <div class="remember-me">
+          <input type="checkbox" id="remember">
+          <label for="remember">Remember me</label>
+        </div>
+        <div class="forgot-password">Forgot password?</div>
+      </div>
+      
+      <div class="verification-info">
+        <i class="fas fa-shield-alt"></i> Secure login with email/SMS verification
+      </div>
+      
+      <div class="recaptcha-container">
+        Protected by reCAPTCHA v3
+      </div>
+      
+      <button class="login-button" disabled>Login</button>
+      <div class="signup-link">Create an account</div>
+    </div>
+    
+    <!-- Registration Form (Initially Hidden) -->
+    <div class="register-form">
+      <div class="logo">SMARTRENT</div>
+      
+      <div class="auth-type-toggle">
+        <span data-type="login">Login</span>
+        <span class="active" data-type="register">Register</span>
+      </div>
+      
+      <h2 class="login-title">Create Account</h2>
+      
+      <!-- Step Indicator -->
+      <div class="step-indicator">
+        <div class="step active"></div>
+        <div class="step"></div>
+        <div class="step"></div>
+      </div>
+      
+      <!-- Step 1: Role Selection -->
+      <div class="registration-step" id="step1">
+        <div class="role-selector">
+          <div class="role-option active" data-role="tenant">Tenant</div>
+          <div class="role-option" data-role="landlord">Landlord</div>
+          <div class="role-option" data-role="worker">Worker</div>
+          <div class="role-option" data-role="shop">Shop Manager</div>
+        </div>
+        
+        <div class="form-group">
+          <input type="text" id="fullname" required>
+          <label>Full Name</label>
+        </div>
+        
+        <div class="form-group">
+          <input type="email" id="reg-email" required>
+          <label>Email</label>
+          <div class="email-suggestions"></div>
+        </div>
+        
+        <div class="form-group with-code">
+          <span class="phone-code">+254</span>
+          <input type="tel" id="phone" required>
+          <label>Phone Number</label>
+        </div>
+      </div>
+      
+      <!-- Step 2: Password & Details -->
+      <div class="registration-step" id="step2" style="display:none;">
+        <div class="form-group">
+          <input type="password" id="reg-password" required>
+          <label>Password</label>
+          <i class="toggle-password fas fa-eye-slash"></i>
+          <div class="password-strength"></div>
+        </div>
+        
+        <div class="form-group">
+          <input type="password" id="confirm-password" required>
+          <label>Confirm Password</label>
+          <i class="toggle-password fas fa-eye-slash"></i>
+        </div>
+        
+        <!-- Conditional fields for different roles -->
+        <div class="form-group landlord-field hidden">
+          <input type="text" id="company-name">
+          <label>Company/Property Name</label>
+        </div>
+        
+        <div class="form-group tenant-field">
+          <input type="text" id="id-number" required>
+          <label>ID Number</label>
+        </div>
+      </div>
+      
+      <!-- Step 3: Verification -->
+      <div class="registration-step" id="step3" style="display:none;">
+        <div class="verification-info">
+          <i class="fas fa-envelope"></i> We've sent a verification code to your email
+        </div>
+        
+        <div class="form-group">
+          <input type="text" id="verification-code" required>
+          <label>Verification Code</label>
+        </div>
+        
+        <div class="verification-info">
+          <i class="fas fa-info-circle"></i> Your account will be activated after landlord/admin approval
+        </div>
+      </div>
+      
+      <div class="recaptcha-container">
+        Protected by reCAPTCHA v3
+      </div>
+      
+      <button class="login-button" id="register-next-btn">Next</button>
+      <div class="signup-link" id="back-to-login">Already have an account? Login</div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize toast notifications
+    toastr.options = {
+      closeButton: true,
+      progressBar: true,
+      positionClass: "toast-top-right",
+      timeOut: 3000
+    };
+
+    // DOM Elements - Login Form
+    const loginForm = document.querySelector('.login-form');
+    const registerForm = document.querySelector('.register-form');
+    const authToggle = document.querySelectorAll('.auth-type-toggle span');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const passwordToggles = document.querySelectorAll('.toggle-password');
+    const passwordStrengths = document.querySelectorAll('.password-strength');
+    const loginButton = document.querySelector('.login-button');
+    const roleOptions = document.querySelectorAll('.role-option');
+    const emailSuggestions = document.querySelectorAll('.email-suggestions');
+    const rememberMe = document.getElementById('remember');
+    const forgotPassword = document.querySelector('.forgot-password');
+    const recaptchaContainer = document.querySelectorAll('.recaptcha-container');
+    const signupLink = document.querySelector('.signup-link');
+    const backToLoginLink = document.getElementById('back-to-login');
+    
+    // Registration Form Elements
+    const regNextBtn = document.getElementById('register-next-btn');
+    const regSteps = document.querySelectorAll('.registration-step');
+    const stepIndicators = document.querySelectorAll('.step');
+    let currentStep = 0;
+
+    // Common email domains for suggestions
+    const emailDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com'];
+
+    // Animation when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.querySelector('.login-container');
+      container.style.opacity = '0';
+      
+      setTimeout(() => {
+        container.style.transition = 'opacity 1s ease';
+        container.style.opacity = '1';
+      }, 300);
+
+      // Check for saved credentials
+      const savedEmail = localStorage.getItem('smartrent_email');
+      if (savedEmail) {
+        emailInput.value = savedEmail;
+        rememberMe.checked = true;
+        if (emailInput.value) {
+          emailInput.dispatchEvent(new Event('input'));
+        }
+      }
+    });
+
+    // Float animation for the forms
+    let floatAnimation = () => {
+      const activeForm = document.querySelector('.login-form:not([style*="display: none"]), .register-form:not([style*="display: none"])');
+      if (activeForm) {
+        activeForm.style.transform = 'translateY(-3px)';
+        setTimeout(() => {
+          activeForm.style.transform = 'translateY(3px)';
+        }, 1000);
+      }
+    };
+
+    loginForm.style.transition = 'transform 2s ease-in-out';
+    registerForm.style.transition = 'transform 2s ease-in-out';
+    setInterval(floatAnimation, 2000);
+
+    // Toggle between Login and Register
+    authToggle.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const type = toggle.dataset.type;
+        
+        // Update active toggle
+        authToggle.forEach(t => t.classList.remove('active'));
+        toggle.classList.add('active');
+        
+        // Show appropriate form
+        if (type === 'login') {
+          loginForm.style.display = 'flex';
+          registerForm.style.display = 'none';
+        } else {
+          loginForm.style.display = 'none';
+          registerForm.style.display = 'flex';
+          // Reset registration steps
+          currentStep = 0;
+          updateRegistrationStep();
+        }
+      });
+    });
+
+    // Registration next step
+    regNextBtn.addEventListener('click', () => {
+      if (currentStep < 2) {
+        currentStep++;
+        updateRegistrationStep();
+      } else {
+        // Handle form submission
+        toastr.success('Registration submitted! Please wait for approval.');
+        setTimeout(() => {
+          // Switch back to login
+          document.querySelector('[data-type="login"]').click();
+        }, 2000);
+      }
+    });
+
+    // Update registration step display
+    function updateRegistrationStep() {
+      regSteps.forEach((step, index) => {
+        step.style.display = index === currentStep ? 'block' : 'none';
+      });
+      
+      stepIndicators.forEach((indicator, index) => {
+        indicator.classList.toggle('active', index <= currentStep);
+      });
+      
+      // Update button text on last step
+      regNextBtn.textContent = currentStep === 2 ? 'Submit' : 'Next';
+      
+      // Show/hide role-specific fields
+      if (currentStep === 1) {
+        const activeRole = document.querySelector('.register-form .role-option.active').dataset.role;
+        document.querySelectorAll('.landlord-field').forEach(field => {
+          field.classList.toggle('hidden', activeRole !== 'landlord');
+        });
+        document.querySelectorAll('.tenant-field').forEach(field => {
+          field.classList.toggle('hidden', activeRole !== 'tenant');
+        });
+      }
+    }
+
+    // Role selector
+    roleOptions.forEach(option => {
+      option.addEventListener('click', () => {
+        const parentForm = option.closest('.login-form, .register-form');
+        const roleOptions = parentForm.querySelectorAll('.role-option');
+        
+        roleOptions.forEach(opt => opt.classList.remove('active'));
+        option.classList.add('active');
+        
+        // Show role-specific message
+        const role = option.dataset.role;
+        toastr.info(`Switching to ${role.charAt(0).toUpperCase() + role.slice(1)} login`);
+        
+        // Update role-specific fields in registration
+        if (parentForm.classList.contains('register-form') && currentStep === 1) {
+          updateRegistrationStep();
+        }
+      });
+    });
+
+    // Toggle password visibility
+    passwordToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const passwordField = toggle.previousElementSibling;
+        
+        if (passwordField.type === 'password') {
+          passwordField.type = 'text';
+          toggle.classList.remove('fa-eye-slash');
+          toggle.classList.add('fa-eye');
+        } else {
+          passwordField.type = 'password';
+          toggle.classList.remove('fa-eye');
+          toggle.classList.add('fa-eye-slash');
+        }
+      });
+    });
+
+    // Email suggestions
+    document.querySelectorAll('input[type="email"]').forEach(input => {
+      input.addEventListener('input', () => {
+        const value = input.value;
+        const suggestions = input.nextElementSibling;
+        
+        if (value.includes('@') && !value.includes('.')) {
+          // Show suggestions
+          suggestions.innerHTML = '';
+          suggestions.classList.add('show');
+          
+          const domain = value.split('@')[1];
+          
+          emailDomains.forEach(emailDomain => {
+            if (emailDomain.startsWith(domain)) {
+              const suggestion = document.createElement('div');
+              suggestion.className = 'email-suggestion';
+              suggestion.textContent = `${value.split('@')[0]}@${emailDomain}`;
+              
+              suggestion.addEventListener('click', () => {
+                input.value = suggestion.textContent;
+                suggestions.classList.remove('show');
+                validateForm();
+              });
+              
+              suggestions.appendChild(suggestion);
+            }
+          });
+          
+          if (suggestions.children.length === 0) {
+            suggestions.classList.remove('show');
+          }
+        } else {
+          suggestions.classList.remove('show');
+        }
+        
+        validateForm();
+      });
+    });
+
+    // Password strength checker
+    document.querySelectorAll('input[type="password"]').forEach(input => {
+      const strengthIndicator = input.parentElement.querySelector('.password-strength');
+      if (strengthIndicator) {
+        input.addEventListener('input', () => {
+          const value = input.value;
+          
+          if (value.length === 0) {
+            strengthIndicator.textContent = '';
+            strengthIndicator.className = 'password-strength';
+          } else if (value.length < 8) {
+            strengthIndicator.textContent = 'Weak password';
+            strengthIndicator.className = 'password-strength weak';
+          } else if (value.length < 12 || !/[A-Z]/.test(value) || !/[0-9]/.test(value)) {
+            strengthIndicator.textContent = 'Medium password';
+            strengthIndicator.className = 'password-strength medium';
+          } else {
+            strengthIndicator.textContent = 'Strong password';
+            strengthIndicator.className = 'password-strength strong';
+          }
+          
+          validateForm();
+        });
+      }
+    });
+
+    // Handle clicking outside email suggestions
+    document.addEventListener('click', (e) => {
+      emailSuggestions.forEach(suggestions => {
+        if (!suggestions.previousElementSibling.contains(e.target) && !suggestions.contains(e.target)) {
+          suggestions.classList.remove('show');
+        }
+      });
+    });
+
+    // Validate form
+    function validateForm() {
+      const isLoginForm = loginForm.style.display !== 'none';
+      
+      if (isLoginForm) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const isEmailValid = emailRegex.test(emailInput.value);
+        const isPasswordValid = passwordInput.value.length >= 6;
+        
+        loginButton.disabled = !isEmailValid || !isPasswordValid;
+      } else {
+        // Registration validation logic based on current step
+        if (currentStep === 0) {
+          const fullnameInput = document.getElementById('fullname');
+          const regEmailInput = document.getElementById('reg-email');
+          const phoneInput = document.getElementById('phone');
+          
+          const isFullnameValid = fullnameInput.value.trim().length > 0;
+          const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(regEmailInput.value);
+          const isPhoneValid = phoneInput.value.trim().length >= 9;
+          
+          regNextBtn.disabled = !isFullnameValid || !isEmailValid || !isPhoneValid;
+        } else if (currentStep === 1) {
+          const regPasswordInput = document.getElementById('reg-password');
+          const confirmPasswordInput = document.getElementById('confirm-password');
+          const idNumberInput = document.getElementById('id-number');
+          
+          const isPasswordValid = regPasswordInput.value.length >= 8;
+          const doPasswordsMatch = regPasswordInput.value === confirmPasswordInput.value;
+          const isIdValid = idNumberInput && !idNumberInput.classList.contains('hidden') ? 
+                           idNumberInput.value.trim().length > 0 : true;
+          
+          regNextBtn.disabled = !isPasswordValid || !doPasswordsMatch || !isIdValid;
+        } else if (currentStep === 2) {
+          const verificationInput = document.getElementById('verification-code');
+          regNextBtn.disabled = verificationInput.value.trim().length !== 6;
+        }
+      }
+    }
+
+    // Monitor all form inputs for validation
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('input', validateForm);
+    });
+
+    // Forgot password
+    forgotPassword.addEventListener('click', () => {
+      const email = emailInput.value;
+      
+      if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        toastr.info(`Password reset link sent to ${email}`);
+      } else {
+        toastr.warning('Please enter a valid email address first');
+      }
+    });
+
+    // Simulate reCAPTCHA
+    setTimeout(() => {
+      recaptchaContainer.forEach(container => {
+        container.innerHTML = '<div style="display: flex; align-items: center;"><i class="fas fa-shield-alt" style="color: #00F0FF; margin-right: 5px;"></i> Protecte
