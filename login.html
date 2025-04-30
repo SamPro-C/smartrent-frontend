@@ -7,18 +7,39 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-    // Simulating a successful login (until backend is ready)
-const user = {
-  id: "123",
-  name: "John Doe",
-  role: "landlord",
-  email: "john@example.com",
-  token: "mock-jwt-token" // you can use any placeholder
-};
+  // Simulate form submission
+  document.querySelector("form").addEventListener("submit", function (e) {
+    e.preventDefault();
 
-localStorage.setItem("user", JSON.stringify(user));
-window.location.href = "/landlords-dashboard.html";
-    </script>
+    const email = document.getElementById("email").value;
+    const role = document.getElementById("role").value;
+
+    // Simulating successful login (mocked until backend is ready)
+    const user = {
+      id: "123",
+      name: "John Doe",
+      role: role,
+      email: email,
+      token: "mock-jwt-token"
+    };
+
+    localStorage.setItem("user", JSON.stringify(user));
+
+    // Redirect based on role
+    if (role === "landlord") {
+      window.location.href = "/landlords-dashboard.html";
+    } else if (role === "tenant") {
+      window.location.href = "/tenants-dashboard.html";
+    } else if (role === "shop_manager") {
+      window.location.href = "/shop-manager-dashboard.html";
+    } else if (role === "admin") {
+      window.location.href = "/admin-dashboard.html";
+    } else {
+      alert("Unknown role selected.");
+    }
+  });
+</script>
+
 
     <style>
         :root {
