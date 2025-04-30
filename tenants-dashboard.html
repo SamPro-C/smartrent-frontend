@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartRent - Tenant Dashboard</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #edf2ff;
+            --secondary: #2ec4b6;
+            --dark: #1a1b25;
+            --gray: #f8f9fa;
+            --gray-medium: #e9ecef;
+            --text: #495057;
+            --success: #38b000;
+            --warning: #ff9f1c;
+            --danger: #e71d36;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--text);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-btn {
+            background-color: white;
+            border: 2px solid var(--primary-light);
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-btn:hover {
+            background-color: var(--primary-light);
+        }
+        
+        .nav-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        /* Dashboard */
+        .dashboard {
+            margin-top: 30px;
+        }
+        
+        .dash-section {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-medium);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        /* Tenant Info */
+        .tenant-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-card {
+            padding: 15px;
+            background-color: var(--gray);
+            border-radius: 8px;
+        }
+        
+        .info-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        /* Payment Section */
+        .payment-overview {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .payment-stat {
+            flex: 1;
+            padding: 15px;
+            background-color: var(--gray);
+            border-radius: 8px;
+            margin-right: 15px;
+        }
+        
+        .payment-stat:last-child {
+            margin-right: 0;
+        }
+        
+        .payment-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .payment-value {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .payment-value.due {
+            color: var(--danger);
+        }
+        
+        .payment-value.paid {
+            color: var(--success);
+        }
+        
+        .btn-pay {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-pay:hover {
+            background-color: #3048c6;
+            transform: translateY(-2px);
+        }
+        
+        .payment-history {
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-medium);
+        }
+        
+        th {
+            background-color: var(--gray);
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: var(--gray);
+        }
+        
+        .status-paid {
+            color: var(--success);
+            background-color: rgba(56, 176, 0, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        /* Shopping Section */
+        .shopping-banner {
+            background: linear-gradient(to right, #4361ee, #3a0ca3);
+            border-radius: 10px;
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        
+        .shopping-text h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        
+        .shopping-text p {
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .btn-shop {
+            background-color: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-shop:hover {
+            background-color: var(--gray);
+            transform: translateY(-2px);
+        }
+        
+        /* Workers Section */
+        .workers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .worker-card {
+            background-color: var(--gray);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .worker-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .worker-role {
+            color: var(--secondary);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .worker-detail {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .detail-label {
+            font-size: 12px;
+            color: #6c757d;
+            width: 100px;
+        }
+        
+        .detail-value {
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-buttons {
+                display: none;
+            }
+            
+            .payment-overview {
+                flex-direction: column;
+            }
+            
+            .payment-stat {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .workers-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .shopping-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .shopping-text {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Navigation Buttons -->
+<header>
+    <div class="container header-container">
+        <div class="logo">SmartRent</div>
+        <nav class="nav-buttons">
+            <a href="dashboard.html" class="nav-btn active">Dashboard</a>
+            <a href="payment.html" class="nav-btn">Payments</a>
+            <a href="service.html" class="nav-btn">Requests</a>
+            <a href="shopping.html" class="nav-btn">Shopping</a>
+            <a href="helps.html" class="nav-btn">Help</a>
+        </nav>
+    </div>
+</header>
+    
+    <!-- Main Dashboard Content -->
+    <div class="container dashboard">
+        <!-- Tenant Information Section -->
+        <div class="dash-section">
+            <div class="section-header">
+                <div class="section-title">Tenant Information</div>
+            </div>
+            <div class="tenant-info">
+                <div class="info-card">
+                    <div class="info-label">Tenant Name</div>
+                    <div class="info-value">John Smith</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Apartment Name</div>
+                    <div class="info-value">Sunshine Heights</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Unit Name</div>
+                    <div class="info-value">Block C</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Room Number</div>
+                    <div class="info-value">304</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Tenant ID</div>
+                    <div class="info-value">TN-2023-8749</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Payment Section -->
+        <div class="dash-section">
+            <div class="section-header">
+                <div class="section-title">Payment Details</div>
+                <button class="btn-pay">Pay Now</button>
+            </div>
+            
+            <div class="payment-overview">
+                <div class="payment-stat">
+                    <div class="payment-label">Total Amount Due</div>
+                    <div class="payment-value due">$1,200.00</div>
+                </div>
+                <div class="payment-stat">
+                    <div class="payment-label">Amount Paid This Month</div>
+                    <div class="payment-value paid">$800.00</div>
+                </div>
+                <div class="payment-stat">
+                    <div class="payment-label">Remaining Balance</div>
+                    <div class="payment-value due">$400.00</div>
+                </div>
+            </div>
+            
+            <div class="payment-history">
+                <div class="section-title" style="margin-bottom: 15px;">Payment History</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Reference</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Apr 10, 2025</td>
+                            <td>PAY-8294010</td>
+                            <td>$800.00</td>
+                            <td><span class="status-paid">Paid</span></td>
+                        </tr>
+                        <tr>
+                            <td>Mar 05, 2025</td>
+                            <td>PAY-7561039</td>
+                            <td>$1,200.00</td>
+                            <td><span class="status-paid">Paid</span></td>
+                        </tr>
+                        <tr>
+                            <td>Feb 04, 2025</td>
+                            <td>PAY-6432985</td>
+                            <td>$1,200.00</td>
+                            <td><span class="status-paid">Paid</span></td>
+                        </tr>
+                        <tr>
+                            <td>Jan 06, 2025</td>
+                            <td>PAY-5328975</td>
+                            <td>$1,200.00</td>
+                            <td><span class="status-paid">Paid</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Shopping Section -->
+        <div class="dash-section">
+            <div class="section-header">
+                <div class="section-title">Shopping</div>
+            </div>
+            
+            <div class="shopping-banner">
+                <div class="shopping-text">
+                    <h3>Shop from the comfort of your home</h3>
+                    <p>Explore our marketplace for groceries, household items, and more with fast delivery to your door.</p>
+                </div>
+                <button class="btn-shop">Shop Now</button>
+            </div>
+        </div>
+        
+        <!-- Workers Section -->
+        <div class="dash-section">
+            <div class="section-header">
+                <div class="section-title">Active Workers</div>
+            </div>
+            
+            <div class="workers-grid">
+                <div class="worker-card">
+                    <div class="worker-name">Michael Johnson</div>
+                    <div class="worker-role">Maintenance Technician</div>
+                    
+                    <div class="worker-detail">
+                        <div class="detail-label">Work Areas:</div>
+                        <div class="detail-value">Plumbing, Electrical</div>
+                    </div>
+                    
+                    <div class="worker-detail">
+                        <div class="detail-label">Contact:</div>
+                        <div class="detail-value">+1 (555) 234-5678</div>
+                    </div>
+                    
+                    <div class="worker-detail">
+                        <div class="detail-label">Hours:</div>
+                        <div class="detail-value">Mon-Fri: 9AM - 5PM</div>
+                    </div>
+                </div>
+                
+                <div class="worker-card">
+                    <div class="worker-name">Sarah Williams</div>
+                    <div class="worker-role">Cleaning Specialist</div>
+                    
+                    <div class="worker-detail">
+                        <div class="detail-label">Work Areas:</div>
+                        <div class="detail-value">Common Areas, Windows</div>
+                    </div>
+                    
+                    <div class="worker-detail">
+                        <div class="detail-label">Contact:</div>
+                        <div class="detail-value">+1 (555) 876-5432</div>
+                    </div>
+                    
+                    <div class="worker-detail">
+                        <div class="detail-label">Hours:</div>
+                        <div class="detail-value">Wed-Sun: 10AM - 6PM</div>
+                    </div>
+                </div>
+                
+                <div class="worker-card">
+                    <div class="worker-name">Robert Garcia</div>
+                    <div class="worker-role">Security Guard</div>
+                    
+                    <div class="worker-detail">
+                        <div class="detail-label">Work Areas:</div>
+                        <div class="detail-value">Main Entrance, Parking</div>
+                    </div>
+                    
+                    <div class="worker-detail">
+                        <div class="detail-label">Contact:</div>
+                        <div class="detail-value">+1 (555) 123-4567</div>
+                    </div>
+                    
+                    <div class="worker-detail">
+                        <div class="detail-label">Hours:</div>
+                        <div class="detail-value">24/7 Shifts</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
